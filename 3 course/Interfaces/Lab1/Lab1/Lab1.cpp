@@ -3,9 +3,13 @@
 
 #include "stdafx.h"
 #include "Lab1.h"
+#include <fstream>
+#include <ctime>
+#include <string>
 
 #define MAX_LOADSTRING 100
-#define NAME_OF_BMP_FILE "MARBLES.BMP"
+#define NAME_OF_BMP_FILE "Earth.BMP"
+
 
 // √лобальные переменные:
 HINSTANCE hInst;                                // текущий экземпл€р
@@ -209,6 +213,8 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 int Action(HWND hWnd)
 {
+	std::ofstream ofs("result.txt");
+
 	RECT rcClient;
 	GetClientRect(hWnd, &rcClient);
 
@@ -255,12 +261,15 @@ int Action(HWND hWnd)
 	bmi.bmiHeader.biBitCount = 24;
 	bmi.bmiHeader.biCompression = BI_RGB;
 
+	double start = clock();
 	int a = GetDIBits(hTempHdc, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi, DIB_RGB_COLORS);
-
+	
 	int size = 3 * bmi.bmiHeader.biHeight*bmi.bmiHeader.biWidth;
 	for (int i = 0; i < size;i += 3)
 		lpbitmap[i] = 0;
-
+	double finish = clock();
+	ofs << (finish - start) / CLOCKS_PER_SEC;
+	ofs.close();
 	
 
 	HBITMAP hNewBitmap = CreateDIBitmap(hTempHdc, &bmi.bmiHeader, CBM_INIT, lpbitmap, &bmi, DIB_RGB_COLORS);
@@ -282,10 +291,39 @@ int Action(HWND hWnd)
 		return 1;
 	}
 
+	BITMAPFILEHEADER   bmfHeader;
+
+	
+	HANDLE hFile = CreateFile(TEXT("Result.BMP"),
+		GENERIC_WRITE,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+
+	// Add the size of the headers to the size of the bitmap to get the total file size
+	DWORD dwSizeofDIB = dwBmpSize + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+	//Offset to where the actual bitmap bits start.
+	bmfHeader.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
+
+	//Size of the file
+	bmfHeader.bfSize = dwSizeofDIB;
+
+	//bfType must always be BM for Bitmaps
+	bmfHeader.bfType = 0x4D42; //BM   
+
+	DWORD dwBytesWritten = 0;
+	WriteFile(hFile, (LPSTR)&bmfHeader, sizeof(BITMAPFILEHEADER), &dwBytesWritten, NULL);
+	WriteFile(hFile, (LPSTR)&bmi, sizeof(BITMAPINFOHEADER), &dwBytesWritten, NULL);
+	WriteFile(hFile, (LPSTR)lpbitmap, dwBmpSize, &dwBytesWritten, NULL);
+
+
 	DeleteObject(hNewBitmap);
 	DeleteDC(hNewDC);
 	GlobalUnlock(hDIB);
 	GlobalFree(hDIB);
+	CloseHandle(hFile);
 
 	ReleaseDC(hWnd, hdc);
 
