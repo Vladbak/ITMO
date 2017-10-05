@@ -246,7 +246,7 @@ int Action(HWND hWnd)
 
 	//зƒ≈—№ ћџ ѕќЋ”„ј≈ћ в массив lpbitmap байты из картинки дл€ последующей обработки
 	
-	
+	 
 	BITMAPINFO bmi;
 	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 	bmi.bmiHeader.biHeight = bm.bmHeight;
