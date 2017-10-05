@@ -144,13 +144,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 	{
-		hBitmap = (HBITMAP)LoadImageW(NULL, TEXT(NAME_OF_BMP_FILE), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-		GetObject(hBitmap, sizeof(bm), &bm);
-		//((int*)bm.bmBits)[0] = 1;
-		hdc = GetDC(hWnd);
-		memBit1 = CreateCompatibleDC(hdc);
-		SelectObject(memBit1, hBitmap);
-		ReleaseDC(hWnd, hdc);
+		Action(hWnd);
 		break;
 
 	}
@@ -223,8 +217,9 @@ int Action(HWND hWnd)
 	GetObject(hBitmap, sizeof(bm), &bm);
 
 	hdc = GetDC(hWnd);
-	HDC tempHdc = CreateCompatibleDC(hdc);
-	SelectObject(tempHdc, hBitmap);
+	HDC hTempHdc = CreateCompatibleDC(hdc);
+	
+	SelectObject(hTempHdc, hBitmap);
 	
 	// “ут мы копируем и одновременно раст€гиваем пикчу на полокна
 	SetStretchBltMode(hdc, HALFTONE);
@@ -232,7 +227,7 @@ int Action(HWND hWnd)
 		hdc,
 		0,0,
 		rcClient.right/2, rcClient.bottom,
-		tempHdc,
+		hTempHdc,
 		0,0,
 		bm.bmWidth, bm.bmHeight,
 		SRCCOPY
@@ -242,16 +237,55 @@ int Action(HWND hWnd)
 	}
 	//TODO: –еализовать выполнение задани€ (удалить синий канал изображени€)
 
+	//кака€-то хрень, хран€ща€ размер нужной нам пам€ти дл€ выделени€
+	DWORD dwBmpSize = ((bm.bmWidth * 32 + 31) / 32) * 4 * bm.bmHeight;
 
 
+	HANDLE hDIB = GlobalAlloc(GHND, dwBmpSize);
+	char *lpbitmap = (char *)GlobalLock(hDIB);
 
+	//зƒ≈—№ ћџ ѕќЋ”„ј≈ћ в массив lpbitmap байты из картинки дл€ последующей обработки
+	
+	
+	BITMAPINFO bmi;
+	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi.bmiHeader.biHeight = bm.bmHeight;
+	bmi.bmiHeader.biWidth = bm.bmWidth;
+	bmi.bmiHeader.biPlanes = 1;
+	bmi.bmiHeader.biBitCount = 24;
+	bmi.bmiHeader.biCompression = BI_RGB;
 
+	int a = GetDIBits(hTempHdc, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi, DIB_RGB_COLORS);
 
+	int size = 3 * bmi.bmiHeader.biHeight*bmi.bmiHeader.biWidth;
+	for (int i = 0; i < size;i += 3)
+		lpbitmap[i] = 0;
 
+	
 
+	HBITMAP hNewBitmap = CreateDIBitmap(hTempHdc, &bmi.bmiHeader, CBM_INIT, lpbitmap, &bmi, DIB_RGB_COLORS);
+	HDC hNewDC = CreateCompatibleDC(hdc);
+	SelectObject(hNewDC, hNewBitmap);
 
+	// “ут мы копируем и одновременно раст€гиваем пикчу на полокна
+	SetStretchBltMode(hdc, HALFTONE);
+	if (!StretchBlt(
+		hdc,
+		rcClient.right / 2, 0,
+		rcClient.right / 2, rcClient.bottom,
+		hNewDC,
+		0, 0,
+		bmi.bmiHeader.biWidth, bmi.bmiHeader.biHeight,
+		SRCCOPY
+		))
+	{
+		return 1;
+	}
 
-
+	DeleteObject(hNewBitmap);
+	DeleteDC(hNewDC);
+	GlobalUnlock(hDIB);
+	GlobalFree(hDIB);
 
 	ReleaseDC(hWnd, hdc);
 
