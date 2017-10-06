@@ -8,7 +8,7 @@
 #include <string>
 
 #define MAX_LOADSTRING 100
-#define NAME_OF_BMP_FILE "Earth.BMP"
+#define NAME_OF_BMP_FILE "MARBLES.BMP"
 
 
 // Глобальные переменные:
@@ -213,6 +213,17 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 int Action(HWND hWnd)
 {
+	HDC hPixelsDC;
+	HDC hTempHdc;
+	HDC hNewDC;
+
+	HBITMAP hNewBitmap;
+
+	BITMAPINFO bmi;
+	BITMAPINFO bmi_pixels;
+
+	BITMAPFILEHEADER   bmfHeader_pixels;
+
 	std::ofstream ofs("result.txt");
 
 	RECT rcClient;
@@ -223,7 +234,7 @@ int Action(HWND hWnd)
 	GetObject(hBitmap, sizeof(bm), &bm);
 
 	hdc = GetDC(hWnd);
-	HDC hTempHdc = CreateCompatibleDC(hdc);
+	hTempHdc = CreateCompatibleDC(hdc);
 	
 	SelectObject(hTempHdc, hBitmap);
 	
@@ -248,12 +259,9 @@ int Action(HWND hWnd)
 
 
 	HANDLE hDIB = GlobalAlloc(GHND, dwBmpSize);
+	//lpbitmap - массив байт, куда помещаются цветобайты из изображения
 	char *lpbitmap = (char *)GlobalLock(hDIB);
 
-	//зДЕСЬ МЫ ПОЛУЧАЕМ в массив lpbitmap байты из картинки для последующей обработки
-	
-	 
-	BITMAPINFO bmi;
 	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
 	bmi.bmiHeader.biHeight = bm.bmHeight;
 	bmi.bmiHeader.biWidth = bm.bmWidth;
@@ -261,19 +269,31 @@ int Action(HWND hWnd)
 	bmi.bmiHeader.biBitCount = 24;
 	bmi.bmiHeader.biCompression = BI_RGB;
 
+	//=========================================================ЗДЕСЬ ПРОИСХОДИТ УДАЛЕНИЕ СИНЕГО КАНАЛА=========================================================================
+	
 	double start = clock();
 	int a = GetDIBits(hTempHdc, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi, DIB_RGB_COLORS);
 	
 	int size = 3 * bmi.bmiHeader.biHeight*bmi.bmiHeader.biWidth;
 	for (int i = 0; i < size;i += 3)
 		lpbitmap[i] = 0;
+
 	double finish = clock();
 	ofs << (finish - start) / CLOCKS_PER_SEC;
 	ofs.close();
+
+	//====================================================================================================================================================================
+
 	
 
-	HBITMAP hNewBitmap = CreateDIBitmap(hTempHdc, &bmi.bmiHeader, CBM_INIT, lpbitmap, &bmi, DIB_RGB_COLORS);
-	HDC hNewDC = CreateCompatibleDC(hdc);
+	//hPixelsDC - новый контекст, в который помещается исходное изображение. Делается как копия для метода с getsetpixels
+	 hPixelsDC = CreateCompatibleDC(hTempHdc);
+
+	BitBlt(hPixelsDC, 0, 0, bm.bmWidth, bm.bmHeight, hTempHdc, 0, 0, SRCCOPY);
+
+	//Создаем битмап, в который запишем новый массив rgb-цветов и новый контекст, чтобы вывести на экран новое изображение
+	 hNewBitmap = CreateDIBitmap(hTempHdc, &bmi.bmiHeader, CBM_INIT, lpbitmap, &bmi, DIB_RGB_COLORS);
+	 hNewDC = CreateCompatibleDC(hdc);
 	SelectObject(hNewDC, hNewBitmap);
 
 	// Тут мы копируем и одновременно растягиваем пикчу на полокна
@@ -318,12 +338,69 @@ int Action(HWND hWnd)
 	WriteFile(hFile, (LPSTR)&bmi, sizeof(BITMAPINFOHEADER), &dwBytesWritten, NULL);
 	WriteFile(hFile, (LPSTR)lpbitmap, dwBmpSize, &dwBytesWritten, NULL);
 
+	GlobalUnlock(hDIB);
+	GlobalFree(hDIB);
 
+	 hDIB = GlobalAlloc(GHND, dwBmpSize);
+	//lpbitmap - массив байт, куда помещаются цветобайты из изображения
+	 lpbitmap = (char *)GlobalLock(hDIB);
+
+	//=================================================ЗДЕСЬ Я УДАЛЯЮ СИНИЙ КАНАЛ ЧЕРЕЗ SET/GET PIXELS===========================================================================================================
+	
+	COLORREF obgr;
+	for (int i = 0; i < bm.bmHeight; i++)
+		for (int j = 0; j < bm.bmWidth; j++)
+		{
+			obgr = GetPixel(hTempHdc, j,i);			// получаем пиксель в формате 0bgr
+			obgr = obgr << 16;							// сдвигаем до состояния gr00
+			obgr = obgr >> 16;							// сдвигаем назад и получаем 00gr
+			SetPixel(hTempHdc, j,i, obgr);
+		}
+	//====================================================================================================================================================================
+	
+	bmi_pixels.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	bmi_pixels.bmiHeader.biHeight = bm.bmHeight;
+	bmi_pixels.bmiHeader.biWidth = bm.bmWidth;
+	bmi_pixels.bmiHeader.biPlanes = 1;
+	bmi_pixels.bmiHeader.biBitCount = 24;
+	bmi_pixels.bmiHeader.biCompression = BI_RGB;
+	
+	int b = GetDIBits(hTempHdc, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi_pixels, DIB_RGB_COLORS);
+
+	HANDLE hPixelsFile = CreateFile(TEXT("Result_pixels.BMP"),
+		GENERIC_WRITE,
+		0,
+		NULL,
+		CREATE_ALWAYS,
+		FILE_ATTRIBUTE_NORMAL, NULL);
+
+	// Add the size of the headers to the size of the bitmap to get the total file size
+	 dwSizeofDIB = dwBmpSize + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER);
+
+	//Offset to where the actual bitmap bits start.
+	 bmfHeader_pixels.bfOffBits = (DWORD)sizeof(BITMAPFILEHEADER) + (DWORD)sizeof(BITMAPINFOHEADER);
+
+	//Size of the file
+	 bmfHeader_pixels.bfSize = dwSizeofDIB;
+
+	//bfType must always be BM for Bitmaps
+	 bmfHeader_pixels.bfType = 0x4D42; //BM   
+
+	 dwBytesWritten = 0;
+	WriteFile(hPixelsFile, (LPSTR)&bmfHeader_pixels, sizeof(BITMAPFILEHEADER), &dwBytesWritten, NULL);
+	WriteFile(hPixelsFile, (LPSTR)&bmi_pixels, sizeof(BITMAPINFOHEADER), &dwBytesWritten, NULL);
+	WriteFile(hPixelsFile, (LPSTR)lpbitmap, dwBmpSize, &dwBytesWritten, NULL);
+
+
+
+	//Удаление всех ненужных объектов и освобождение памяти
 	DeleteObject(hNewBitmap);
 	DeleteDC(hNewDC);
 	GlobalUnlock(hDIB);
 	GlobalFree(hDIB);
+
 	CloseHandle(hFile);
+	CloseHandle(hPixelsFile);
 
 	ReleaseDC(hWnd, hdc);
 
