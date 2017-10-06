@@ -1,6 +1,7 @@
 // Lab1.cpp: определяет точку входа для приложения.
 //
 
+
 #include "stdafx.h"
 #include "Lab1.h"
 #include <fstream>
@@ -8,7 +9,7 @@
 #include <string>
 
 #define MAX_LOADSTRING 100
-#define NAME_OF_BMP_FILE "MARBLES.BMP"
+
 
 
 // Глобальные переменные:
@@ -22,7 +23,7 @@ HDC hdc;
 
 static HDC memBit1;  //  id sovmestimogo konteksta ustroystva
 
-int Action(HWND);
+int Action(HWND, wchar_t*);
 
 
 // Отправить объявления функций, включенных в этот модуль кода:
@@ -148,7 +149,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 	{
-		Action(hWnd);
+		for (int i = 200; i <= 2000; i += 200)
+		{
+			wchar_t* str = new wchar_t[4];
+			_itow(i, str, 10);
+			str = wcscat(str, L".bmp");
+			
+			Action(hWnd, str);
+		}
+
+		
 		break;
 
 	}
@@ -177,7 +187,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: Добавьте сюда любой код прорисовки, использующий HDC...
 			//BitBlt(hdc, 0, 0, bm.bmWidth, bm.bmHeight, memBit1, 0, 0, SRCCOPY);//вывод изображения
-			Action(hWnd);
+		//	Action(hWnd);
 
 			EndPaint(hWnd, &ps);
         }
@@ -211,7 +221,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     return (INT_PTR)FALSE;
 }
 
-int Action(HWND hWnd)
+int Action(HWND hWnd, wchar_t* str)
 {
 	HDC hPixelsDC;
 	HDC hTempHdc;
@@ -229,8 +239,8 @@ int Action(HWND hWnd)
 	RECT rcClient;
 	GetClientRect(hWnd, &rcClient);
 
-
-	hBitmap = (HBITMAP)LoadImageW(NULL, TEXT(NAME_OF_BMP_FILE), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+	
+	hBitmap = (HBITMAP)LoadImageW(NULL,str, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	GetObject(hBitmap, sizeof(bm), &bm);
 
 	hdc = GetDC(hWnd);
@@ -279,8 +289,8 @@ int Action(HWND hWnd)
 		lpbitmap[i] = 0;
 
 	double finish = clock();
-	ofs << (finish - start) / CLOCKS_PER_SEC;
-	ofs.close();
+	ofs << (finish - start) / CLOCKS_PER_SEC<<"\t";
+
 
 	//====================================================================================================================================================================
 
@@ -347,15 +357,20 @@ int Action(HWND hWnd)
 
 	//=================================================ЗДЕСЬ Я УДАЛЯЮ СИНИЙ КАНАЛ ЧЕРЕЗ SET/GET PIXELS===========================================================================================================
 	
+	 
+	 start = clock();
 	COLORREF obgr;
 	for (int i = 0; i < bm.bmHeight; i++)
 		for (int j = 0; j < bm.bmWidth; j++)
 		{
-			obgr = GetPixel(hTempHdc, j,i);			// получаем пиксель в формате 0bgr
+			obgr = GetPixel(hPixelsDC, j,i);			// получаем пиксель в формате 0bgr
 			obgr = obgr << 16;							// сдвигаем до состояния gr00
 			obgr = obgr >> 16;							// сдвигаем назад и получаем 00gr
-			SetPixel(hTempHdc, j,i, obgr);
+			SetPixel(hPixelsDC, j,i, obgr);
 		}
+	finish = clock();
+	ofs << (finish - start) / CLOCKS_PER_SEC << "\n"<<std::flush;
+	ofs.close();
 	//====================================================================================================================================================================
 	
 	bmi_pixels.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -365,7 +380,7 @@ int Action(HWND hWnd)
 	bmi_pixels.bmiHeader.biBitCount = 24;
 	bmi_pixels.bmiHeader.biCompression = BI_RGB;
 	
-	int b = GetDIBits(hTempHdc, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi_pixels, DIB_RGB_COLORS);
+	int b = GetDIBits(hPixelsDC, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi_pixels, DIB_RGB_COLORS);
 
 	HANDLE hPixelsFile = CreateFile(TEXT("Result_pixels.BMP"),
 		GENERIC_WRITE,
