@@ -1,0 +1,36 @@
+body {
+	background-color: white;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: right bottom;
+}
+h1{
+	color: blue;
+	font-family:serif;
+	font-weight:normal;
+	text-align:center;
+}
+#secondLine {
+	color: blue;
+	font-family:serif;
+	font-style:italic;
+	font-weight:normal;
+	font-size:16pt;
+	text-align: center;
+}
+table:first-child{
+	width:10%;
+	color:red;
+}
+form input{
+	margin-left:10%;
+	margin-right:10%;
+}
+
+a:hover {
+	color:red ;
+}
+
+.imgCenter {
+	text-align:center;
+}
