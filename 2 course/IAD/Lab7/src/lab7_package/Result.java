@@ -1,9 +1,5 @@
 package lab7_package;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-
-
 public class Result  {
 		
 	private double x,y,r;

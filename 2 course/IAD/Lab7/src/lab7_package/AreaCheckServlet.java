@@ -10,13 +10,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+
 /**
  * Servlet implementation class AreaCheckServlet
  */
 
 public class AreaCheckServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private Results results;
+	public static Results results = new Results();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -27,7 +29,7 @@ public class AreaCheckServlet extends HttpServlet {
     }
 
     public void init() throws ServletException {
-    	 results = new Results();
+
     }
     
 	/**
@@ -61,21 +63,33 @@ public class AreaCheckServlet extends HttpServlet {
 		new_res.setRes(Check(x, y, r).toString());
 		results.add(new_res);
 		
-		request.setAttribute("Results", results);
 		
-		RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
-		rd.forward(request, response);
-		
-		/*String htmlResponse = "<html>"
-			+"<h2>"+x+y+r+ "</h2>"
-					+ "<a href=\"/lab7/index.jsp\"> back </a>"
+		String htmlResponse = "<html>"
+			+
+			"<table border=\"1\" cellspacing=\"1\" cellpadding=\"1\" align = \"center\">"+
+				"<tr>"+
+					"<td>X</td>"+
+					"<td>Y</td>"+
+					"<td>R</td>"+
+					"<td>Result</td>"+
+				"</tr>"+
+				"<tr>"+
+					"<td>"+x+"</td>"+
+					"<td>"+y+"</td>"+
+					"<td>"+r+"</td>"+
+					"<td>"+Check(x, y, r).toString()+"</td>"+
+				"</tr>"+
+			"</table>"
+			
+					
+					+ "<a style=\"display: block; text-align: center;\" href=\"/lab7/index.jsp\"> back </a>"
 			+"</html>";
-		w.println(htmlResponse);*/
+		w.println(htmlResponse);
 		
 	}
 
 	private Boolean Check(double x, double y, double r){
-		return (Check_if_in_circle(x, y, r)&&Check_if_in_square(x, y, r)&&Check_if_in_triangle(x, y, r));
+		return (Check_if_in_circle(x, y, r)||Check_if_in_square(x, y, r)||Check_if_in_triangle(x, y, r));
 	}
 	
 private boolean Check_if_in_square(double x, double y, double r){

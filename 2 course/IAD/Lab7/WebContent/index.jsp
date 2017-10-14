@@ -1,4 +1,6 @@
 
+<%@page import="lab7_package.AreaCheckServlet"%>
+<%@page import="lab7_package.Results"%>
 <%@page import="lab7_package.Result"%>
 <%@ page language="java" contentType="text/html; charset=utf-8"
     %>
@@ -10,6 +12,7 @@
 		<title>Лабораторная работа 7</title>
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<script src="script.js"></script>
+
 	</head>
 	<body onload="draw(1)">
 	
@@ -28,6 +31,7 @@
 						<script src="graph.js" async>
 						</script>
 					</canvas>
+					<script src="mouse.js" async></script>
 				</td>
 				<td  valign="top" align ="center" width=20% >
 					Форма
@@ -74,16 +78,29 @@ JSP Version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecification
 		</table>
 		
 		<br>
-		<table width="100%" height="100%" border="1" cellspacing="1" cellpadding="1" align = "center">
-			<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-				<c:forEach items="${Results}" var="result"  >		
-						<tr>
-						
-							<td>
-								${result.x}
-							</td>
-						</tr>
-				</c:forEach>
+		<table width="50%" height="100%" border="1" cellspacing="1" cellpadding="1" align = "center">
+			<tr>
+				<td>X</td>
+				<td>Y</td>
+				<td>R</td>
+				<td>Result</td>
+				
+			</tr>
+			<%
+				for(int i=0; i< AreaCheckServlet.results.size(); i++ )
+				{
+					
+					%>
+					<tr>
+						<td><%=AreaCheckServlet.results.get(i).getX() %></td>
+						<td><%=AreaCheckServlet.results.get(i).getY() %></td>
+						<td><%=AreaCheckServlet.results.get(i).getR() %></td>
+						<td><%=AreaCheckServlet.results.get(i).getRes() %></td>	
+					</tr>
+					<%
+				}
+
+			%>
 			
 			
 		</table>
