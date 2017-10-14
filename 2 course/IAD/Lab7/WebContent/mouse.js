@@ -19,27 +19,44 @@
   }
 
   function loadXMLDoc(url, x, y, r) {
+	  alert("loadxml");
   	req = null;
-  	if (window.XMLHttpRequest) {
+  	if (window.XMLHttpRequest) 
+  	{
   		try {
+  			alert("try1");
   			req = new XMLHttpRequest();
-  		} catch (e) {
+  		} catch (e) 
+  		{
+  			alert("catch1");
   		}
-  	} else if (window.ActiveXObject) {
-  		try {
+	} else 
+		if (window.ActiveXObject) 
+	{
+  		try 
+  		{
+  			alert("try2");
   			req = new ActiveXObject('Msxml2.XMLHTTP');
-  		} catch (e) {
-  			try {
-  				req = new ActiveXObject('Microsoft.XMLHTTP');
-  			} catch (e) {
-  			}
+	  	} 
+  		catch (e) 
+	  	{
+	  		alert("cathc2");
+	  			try {
+	  				alert("try3");
+	  				req = new ActiveXObject('Microsoft.XMLHTTP');
+	  			} catch (e) 
+	  			{
+	  				alert("catch3");
+	  			} 
   		}
   	}
   	if (req) {
-  		var params = "x=" + String(x) + "&y=" + String(y) + "&r=" + String(r);
+  		alert("if");
+  		var body = "x=" + encodeURIComponent(x) + "&y=" + encodeURIComponent(y) + "&r=" + encodeURIComponent(r);
   		req.open("POST", url, true);
+  		req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
   		req.onreadystatechange = processReqChange;
-  		req.send(params);
+  		req.send(body);
   	}
   }
 
@@ -62,7 +79,7 @@
 			  	return false;
 			  }
 		
-		 alert("1");
+		
 		var r = form.r.value;
 		
 		var mousePos = getMousePos(canvas, evt);
@@ -82,7 +99,7 @@
 		context.fill();
 		context.closePath();
 		
-		loadXMLDoc("ControllerServlet", x,y,r);
+		 loadXMLDoc("ControllerServlet", x,y,r);
 		});
 
 	      
