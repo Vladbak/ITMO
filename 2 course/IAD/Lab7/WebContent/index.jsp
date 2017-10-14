@@ -78,7 +78,7 @@ JSP Version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecification
 		</table>
 		
 		<br>
-		<table width="50%" height="100%" border="1" cellspacing="1" cellpadding="1" align = "center">
+		<table id="result_table" width="50%" height="100%" border="1" cellspacing="1" cellpadding="1" align = "center">
 			<tr>
 				<td>X</td>
 				<td>Y</td>

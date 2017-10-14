@@ -6,6 +6,7 @@
   		if (req.readyState == 4) {
   			// для статуса "OK"
   			if (req.status == 200) {
+  				document.getElementById('result_table').innerHTML=document.getElementById('result_table').innerHTML;
   				// обработка ответа
   			} else {
   				alert("Не удалось получить данные:\n" + req.statusText);
@@ -19,39 +20,37 @@
   }
 
   function loadXMLDoc(url, x, y, r) {
-	  alert("loadxml");
   	req = null;
   	if (window.XMLHttpRequest) 
   	{
   		try {
-  			alert("try1");
+
   			req = new XMLHttpRequest();
   		} catch (e) 
   		{
-  			alert("catch1");
   		}
 	} else 
 		if (window.ActiveXObject) 
 	{
   		try 
   		{
-  			alert("try2");
+  		
   			req = new ActiveXObject('Msxml2.XMLHTTP');
 	  	} 
   		catch (e) 
 	  	{
-	  		alert("cathc2");
+	  
 	  			try {
-	  				alert("try3");
+	  		
 	  				req = new ActiveXObject('Microsoft.XMLHTTP');
 	  			} catch (e) 
 	  			{
-	  				alert("catch3");
+	  			
 	  			} 
   		}
   	}
   	if (req) {
-  		alert("if");
+
   		var body = "x=" + encodeURIComponent(x) + "&y=" + encodeURIComponent(y) + "&r=" + encodeURIComponent(r);
   		req.open("POST", url, true);
   		req.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');

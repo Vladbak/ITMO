@@ -80,9 +80,7 @@ public class AreaCheckServlet extends HttpServlet {
 					"<td>"+Check(x, y, r).toString()+"</td>"+
 				"</tr>"+
 			"</table>"
-			
-					
-					+ "<a style=\"display: block; text-align: center;\" href=\"/lab7/index.jsp\"> back </a>"
+		  + "<a style=\"display: block; text-align: center;\" href=\"/lab7/index.jsp\"> back </a>"
 			+"</html>";
 		w.println(htmlResponse);
 		
