@@ -12,6 +12,7 @@
 		<title>Лабораторная работа 7</title>
 		<link rel="stylesheet" type="text/css" href="style.css" />
 		<script src="script.js"></script>
+		<script src="jquery-3.2.1.js"></script>
 
 	</head>
 	<body onload="draw(1)">
@@ -30,6 +31,8 @@
 					<canvas  id="myCanvas" width="400" height="400">
 						<script src="graph.js" async>
 						</script>
+						
+						
 					</canvas>
 					<script src="mouse.js" async></script>
 				</td>
@@ -40,34 +43,37 @@
 			
 			<tr>
 				<td height=80%  align = "left">
-					<form name="form" action="ControllerServlet" method="post">
+					<form name="form" action="ControllerServlet" method="post" onsubmit="return validateForm()">
 					Server Version: <%= application.getServerInfo() %><br>
 Servlet Version: <%= application.getMajorVersion() %>.<%= application.getMinorVersion() %>
 JSP Version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecificationVersion() %> <br>
 					
 					
-							X = <br>
-							<input type="hidden" name="x">
-							<input type="button" value="-3" onclick="{document.form.x.value = this.value}" /><br>
-							<input type="button" value="-2" onclick="{document.form.x.value = this.value}"/><br>
-							<input type="button" value="-1" onclick="{document.form.x.value = this.value}" /><br>
-							<input type="button" value="0" onclick="{document.form.x.value = this.value}"/><br>
-							<input type="button" value="1" onclick="{document.form.x.value = this.value}"/><br>
-							<input type="button" value="2" onclick="{document.form.x.value = this.value}"/><br>
-							<input type="button" value="3" onclick="{document.form.x.value = this.value}"/><br>
-							<input type="button" value="4" onclick="{document.form.x.value = this.value}"/><br>
-							<input type="button" value="5" onclick="{document.form.x.value = this.value}"/><br>
+							<div class="label">X =</div> <div class="label" id="temp_value_x"></div>
+							<br>
+						
+							<input type="hidden" name="x" >
+							<input type="button" value="-3" onclick="{document.form.x.value = this.value; refreshLabels()}" /><br>
+							<input type="button" value="-2" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
+							<input type="button" value="-1" onclick="{document.form.x.value = this.value; refreshLabels()}" /><br>
+							<input type="button" value="0" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
+							<input type="button" value="1" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
+							<input type="button" value="2" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
+							<input type="button" value="3" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
+							<input type="button" value="4" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
+							<input type="button" value="5" onclick="{document.form.x.value = this.value; refreshLabels()}"/><br>
 							<br>
 							Y =
 							<input type="text" name="y" value="1" />
 							<br>
-							R =<br>
-							<input type="hidden" name="r"> 
-							<input type="button" value="1" onclick="{document.form.r.value = this.value}"/><br>
-							<input type="button" value="1.5" onclick="{document.form.r.value = this.value}"/><br>
-							<input type="button" value="2" onclick="{document.form.r.value = this.value}"/><br>
-							<input type="button" value="2.5" onclick="{document.form.r.value = this.value}"/><br>
-							<input type="button" value="3" onclick="{document.form.r.value = this.value}"/><br>
+							<div class="label">R =</div> <div class="label" id="temp_value_r">		</div>
+							<br>
+							<input type="hidden" name="r" /> 
+							<input type="button" value="1" onclick="{document.form.r.value = this.value; draw(this.value); refreshLabels()}"/><br>
+							<input type="button" value="1.5" onclick="{document.form.r.value = this.value; draw(this.value); refreshLabels()}"/><br>
+							<input type="button" value="2" onclick="{document.form.r.value = this.value; draw(this.value); refreshLabels()}"/><br>
+							<input type="button" value="2.5" onclick="{document.form.r.value = this.value; draw(this.value); refreshLabels()}"/><br>
+							<input type="button" value="3" onclick="{document.form.r.value = this.value; draw(this.value); refreshLabels()}"/><br>
 							<br>
 							
 						<input type="submit"></p>
@@ -78,6 +84,8 @@ JSP Version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecification
 		</table>
 		
 		<br>
+		<div id="temp_table" align = "center">
+		</div>
 		<table id="result_table" width="50%" height="100%" border="1" cellspacing="1" cellpadding="1" align = "center">
 			<tr>
 				<td>X</td>
@@ -104,6 +112,7 @@ JSP Version: <%= JspFactory.getDefaultFactory().getEngineInfo().getSpecification
 			
 			
 		</table>
+	
 		
 	</body>
 </html>

@@ -77,10 +77,10 @@ public class AreaCheckServlet extends HttpServlet {
 					"<td>"+x+"</td>"+
 					"<td>"+y+"</td>"+
 					"<td>"+r+"</td>"+
-					"<td>"+Check(x, y, r).toString()+"</td>"+
+					"<td id=\"result_tag\">"+Check(x, y, r).toString()+"</td>"+
 				"</tr>"+
 			"</table>"
-		  + "<a style=\"display: block; text-align: center;\" href=\"/lab7/index.jsp\"> back </a>"
+		  + "<a style=\"display: block; text-align: center;\" href=\"index.jsp\"> back </a>"
 			+"</html>";
 		w.println(htmlResponse);
 		
@@ -97,7 +97,7 @@ private boolean Check_if_in_square(double x, double y, double r){
 	
 	}
 private boolean Check_if_in_circle(double x, double y, double r){
-	if (x*x + y*y < r*r)
+	if ((x*x + y*y < r*r) && (x>0)&&(y<0))
 		return true;
 	else return false;
 }

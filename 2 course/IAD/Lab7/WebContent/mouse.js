@@ -6,7 +6,7 @@
   		if (req.readyState == 4) {
   			// для статуса "OK"
   			if (req.status == 200) {
-  				document.getElementById('result_table').innerHTML=document.getElementById('result_table').innerHTML;
+  				
   				// обработка ответа
   			} else {
   				alert("Не удалось получить данные:\n" + req.statusText);
@@ -71,16 +71,13 @@
 	    var canvas = document.getElementById('myCanvas');
 	    var context = canvas.getContext('2d');
 	      
-	     canvas.addEventListener('click', function(evt) {
+	    canvas.addEventListener('click', function(evt) {
 			  if (!isNumeric(form.r.value))
 			  {
 			  	alert("R не установлен! Невозможно выполнить запрос!");
 			  	return false;
 			  }
-		
-		
-		var r = form.r.value;
-		
+
 		var mousePos = getMousePos(canvas, evt);
 		var x_mouse = mousePos.x;
 		var y_mouse = mousePos.y;
@@ -89,16 +86,54 @@
 		x_pixels = (x_mouse-canvas.width/2);
 		y_pixels = (canvas.height/2 - y_mouse);
 		
-		var x = (x_pixels/(canvas.width/8));
-		var y = (y_pixels/(canvas.height/8));
-
-		context.beginPath();
-		context.fillStyle="black";
-		context.fillText(String(x) + " "+String(y), x_mouse,y_mouse);
-		context.fill();
-		context.closePath();
+		var x1 = (x_pixels/(canvas.width/8));
+		var y1 = (y_pixels/(canvas.height/8));
+		var r1 = form.r.value;
+	
+		var str="red";
+		$.ajax
+		(
+		{
+			   url:'ControllerServlet',
+	            data:{x:x1,
+	            	y:y1,
+	            	r:r1},
+	            
+	            type:'post',
+	            success: function(response){ 
+	            	
+	            	
+	                   $('#temp_table').html(response); 
+	
+	           	    if ($(response).find('#result_tag').text()=="true")
+	           	    	  {
+	           	    	  	str="green";
+	           	   
+	           	    	  }
+	           	    		
+	           	    else
+	           	    	  {
+	           	    	
+	           	    	  	str="red";
+	           	    	  }
+	           	 context.fillStyle=str;
+	           	 context.beginPath();
+	           	 context.arc(x_mouse, y_mouse, 5, 0, 2 * Math.PI);
+	           	 context.fill();
+	           	 context.closePath();
+	               },
+	            error: function(response){
+	                   alert(response); // <------ If errors occur trigger an
+										// alert
+	               },
+	            
+		}		
+		)
 		
-		 loadXMLDoc("ControllerServlet", x,y,r);
+		
+		
+		
+		// loadXMLDoc("ControllerServlet", x,y,r);
 		});
 
 	      

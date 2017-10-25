@@ -18,10 +18,7 @@ h1{
 	font-size:16pt;
 	text-align: center;
 }
-table:first-child{
-	width:10%;
-	color:red;
-}
+
 form input{
 	margin-left:10%;
 	margin-right:10%;
@@ -33,4 +30,7 @@ a:hover {
 
 .imgCenter {
 	text-align:center;
+}
+.label{
+	display: inline;
 }
