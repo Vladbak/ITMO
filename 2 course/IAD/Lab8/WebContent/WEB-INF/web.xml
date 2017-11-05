@@ -21,6 +21,12 @@
 		<url-pattern>/faces/*</url-pattern>
 		<url-pattern>*.xhtml</url-pattern>
 	</servlet-mapping>
- 
 
+	<context-param>
+		<param-name>javax.faces.CONFIG_FILES</param-name>
+		<param-value>
+	    	/WEB-INF/navigation-rule.xml,
+	    	/WEB-INF/faces-config.xml
+    </param-value>
+	</context-param>
 </web-app>
