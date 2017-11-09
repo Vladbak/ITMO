@@ -219,39 +219,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			RECT rcClient;
 			GetClientRect(hWnd, &rcClient);
 
-			// “ут мы копируем и одновременно раст€гиваем пикчу на полокна
-			SetStretchBltMode(hdc, HALFTONE);
-			if (!StretchBlt(
-				hdcBuffer,
+
+			BitBlt(hdcBuffer,
 				0, 0,
 				rcClient.right / 2, rcClient.bottom,
 				hdc,
 				0, 0,
-				bm.bmWidth, bm.bmHeight,
-				SRCCOPY
-				))
-			{
-				return 1;
-			}
-			
-			double t;
-			HBITMAP hNewBitmap;
-			DeleteBlueChannelByBits(hdc, hBitmap, bm, &t, &hNewBitmap);
+				SRCCOPY);
 
-			SelectObject(hdc, hNewBitmap);
-			SetStretchBltMode(hdc, HALFTONE);
-			if (!StretchBlt(
-				hdcBuffer,
+			HBRUSH hRed = CreateSolidBrush(RGB(255,255,0));
+			HBRUSH hOld =(HBRUSH) SelectObject(hdcBuffer, hRed);
+
+			double start = clock();
+		
+
+
+
+			BitBlt(hdcBuffer,
 				rcClient.right / 2, 0,
 				rcClient.right / 2, rcClient.bottom,
 				hdc,
-				0, 0,
-				bm.bmWidth, bm.bmHeight,
-				SRCCOPY
-				))
-			{
-				return 1;
-			}
+				0, 0, MERGECOPY);
+
+
+			double finish = clock();
+			double res = (finish - start) / CLOCKS_PER_SEC;
 
 			ReleaseDC(hWnd, hdcBuffer);
 			EndPaint(hWnd, &ps);
