@@ -26,9 +26,7 @@ HDC hdc;
 
 
 int Action(HWND, wchar_t*);
-int DeleteBlueChannelByBits(HDC hdc, HBITMAP hBitmap, BITMAP bm, double *, HBITMAP * );
-int DeleteBlueChannelByPixels(HDC hdc, HBITMAP hBitmap, BITMAP bm, double *);
-
+int ChangeRedAndBlueChannels(HDC hdc, HBITMAP hBitmap, BITMAP bm, double *, HBITMAP * );
 
 // Отправить объявления функций, включенных в этот модуль кода:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -43,12 +41,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 {
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
-
-    // TODO: разместите код здесь.
-
-
-
-
 
 
     // Инициализация глобальных строк
@@ -153,32 +145,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
 	case WM_CREATE:
 	{
-		//double bits[10];
-		//double pixels[10];
-		//for (int i = 200; i <= 2000; i += 200)
-		//{
-		//	wchar_t* str = new wchar_t[5];
-		//	_itow(i, str, 10);
-		//	str = wcscat(str, L".bmp");
-		//	//Загружаем файл с пикчей в битмап
-		//	hBitmap = (HBITMAP)LoadImageW(NULL, str, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
-		//	//Получаем ее свойства в bm
-		//	GetObject(hBitmap, sizeof(bm), &bm);
-		//	HDC hdcBuffer = GetDC(hWnd);
-		//	hdc = CreateCompatibleDC(hdcBuffer);
-		//	ReleaseDC(hWnd, hdcBuffer);
-		//	//привязываем наш битмап к контексту
-		//	SelectObject(hdc, hBitmap);
-		//	double t;
-		//	DeleteBlueChannelByBits(hdc, hBitmap, bm, &t);
-		//	bits[i / 200 - 1] = t;
-		//}
-	
-		//for (int i = 0; i < 10; i++)
-		//{
-		//	double a = bits[i];
-		//}
-		//
+		
 		break;
 
 	}
@@ -206,7 +173,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
             HDC hdc = BeginPaint(hWnd, &ps);
 			//Загружаем файл с пикчей в битмап
-			hBitmap = (HBITMAP)LoadImageW(NULL, L"600.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
+			hBitmap = (HBITMAP)LoadImageW(NULL, L"Earth.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 
 			//Получаем ее свойства в bm
 			GetObject(hBitmap, sizeof(bm), &bm);
@@ -227,17 +194,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				0, 0,
 				SRCCOPY);
 
-		
+			double res;
+			HBITMAP hNewBitmap;
 
+			ChangeRedAndBlueChannels(hdc, hBitmap, bm, &res, &hNewBitmap);
+			SelectObject(hdc, hNewBitmap);
 
 			BitBlt(hdcBuffer,
 				rcClient.right / 2, 0,
 				rcClient.right / 2, rcClient.bottom,
 				hdc,
 				0, 0, SRCCOPY);
-
-
-		
 
 			ReleaseDC(hWnd, hdcBuffer);
 			EndPaint(hWnd, &ps);
@@ -273,7 +240,7 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-int DeleteBlueChannelByBits(HDC hdc, HBITMAP hBitmap, BITMAP bm, double *res, HBITMAP * hNewBitmap)
+int ChangeRedAndBlueChannels(HDC hdc, HBITMAP hBitmap, BITMAP bm, double *res, HBITMAP * hNewBitmap)
 {
 
 	//какая-то хрень, хранящая размер нужной нам памяти для выделения
@@ -291,14 +258,19 @@ int DeleteBlueChannelByBits(HDC hdc, HBITMAP hBitmap, BITMAP bm, double *res, HB
 	bmi.bmiHeader.biBitCount = 24;
 	bmi.bmiHeader.biCompression = BI_RGB;
 
-	//=========================================================ЗДЕСЬ ПРОИСХОДИТ УДАЛЕНИЕ СИНЕГО КАНАЛА=========================================================================
+	//=========================================================ЗДЕСЬ ПРОИСХОДИТ ОБМЕН СИНЕГО И КРАСНОГО КАНАЛА=========================================================================
 
 	double start = clock();
 	int a = GetDIBits(hdc, hBitmap, 0, (UINT)bm.bmHeight, lpbitmap, (BITMAPINFO *)&bmi, DIB_RGB_COLORS);
 
 	int size = 3 * bmi.bmiHeader.biHeight*bmi.bmiHeader.biWidth;
+	char blue;
 	for (int i = 0; i < size;i += 3)
-		lpbitmap[i] = 0;
+	{
+		blue = lpbitmap[i];
+		lpbitmap[i] = lpbitmap[i + 2];
+		lpbitmap[i + 2] = blue;
+	}
 
 	double finish = clock();
 	*res = (finish - start) / CLOCKS_PER_SEC;
