@@ -7,10 +7,11 @@
 
 	<navigation-rule>
 		<display-name>login.xhtml</display-name>
-		<from-view-id>/login.xhtml</from-view-id>
+		<from-view-id>login.xhtml</from-view-id>
+
 		<navigation-case>
 			<from-outcome>login</from-outcome>
-			<to-view-id>/welcome.xhtml</to-view-id>
+			<to-view-id>welcome.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 
