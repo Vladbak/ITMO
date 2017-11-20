@@ -4,3 +4,10 @@
 margin: auto !important;
 }
 
+ #dt {
+     border-collapse: collapse;
+ }
+
+ #dt tr, #dt td, #dt th   {
+     border: 1px solid black;
+ }

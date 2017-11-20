@@ -1,10 +1,10 @@
-document.getElementById("svg").addEventListener("onclick", function(evt){drawPoint(evt);});
+document.getElementById("svg").addEventListener("click", drawPoint(event));
 
 function draw(r) {
 
 	d3.select("#svg").remove();
 	d3.select("#div_svg").append("svg").attr("id", "svg").attr("width", 300)
-			.attr("height", 300);
+			.attr("height", 300).attr("onclick", " drawPoint(event)");
 	d3.select("#svg").append("polygon").attr(
 			"points",
 			"150,150 " + String(150 - r * 20) + ",150 150,"
@@ -23,14 +23,13 @@ function draw(r) {
 
 	d3.select("#svg").append("line").attr("x1", 150).attr("x2", 150).attr("y1",
 			0).attr("y2", 300).style("stroke", "black");
+    document.getElementById("svg").addEventListener("click", drawPoint);
 
 }
 
-function drawPoint(evt){
-	var x = evt.clientX;
-	var y = evt.clientY;
-
-	d3.select("#svg").append("circle").attr("cx", String(x)).attr("cy", String(y)).attr("r", "3");
-
+function drawPoint(event){
+    var x = event.pageX - $('#svg').offset().left;
+    var y = event.pageY - $('#svg').offset().top;
+    d3.select("#svg").append("circle").attr("cx", String(x)).attr("cy", String(y)).attr("r", "3").style("fill", "red");
 
 }

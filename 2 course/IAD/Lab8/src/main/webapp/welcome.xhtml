@@ -9,6 +9,7 @@
 <ui:composition template="/WEB-INF/templates/template.xhtml">
     <ui:define name="css">
         <h:outputStylesheet name="style.css"> </h:outputStylesheet>
+        <link rel="stylesheet" href="resources/style.css" type="text/css"/>
     </ui:define>
     <ui:define name="script">
         <h:outputScript name="d3.js" target="body"/>
@@ -23,7 +24,8 @@
                                     value="resources/areas.png"/></td>
                 <td>
                     <div id="div_svg">
-                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg" width="300" height="300">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg" width="300" height="300"
+                             onclick=";drawPoint(evt);">
                             <polygon
                                     points="150,150 130,150 150,110" fill="blue"/>
                             <path
@@ -57,7 +59,7 @@
                         </div>
                         <div>
                             <h:outputText value="Y: "/>
-                            <p:inputText value="#{checkBean.y}" />
+                            <p:inputText value="#{checkBean.y}"/>
                         </div>
                         <div>
 
@@ -65,28 +67,48 @@
 
 
                             </p:outputLabel>
-                            <p:commandButton value="1" onclick="{draw(1); }" action="#{checkBean.ChangeCommandButtonR(1)}"  />
-                            <p:commandButton value="1.5"  onclick="{draw(1.5); }" action="#{checkBean.ChangeCommandButtonR(1.5)}"/>
-                            <p:commandButton value="2" id="R2" onclick="{draw(2); }" action="#{checkBean.ChangeCommandButtonR(2)}"/>
-                            <p:commandButton value="2.5" id="R25" onclick="{draw(2.5); }" action="#{checkBean.ChangeCommandButtonR(2.5)}"/>
-                            <p:commandButton value="3"  id="R3" onclick="{draw(3); }" action="#{checkBean.ChangeCommandButtonR(3)}"/>
+                            <p:commandButton value="1" onclick="{draw(1); }"
+                                             action="#{checkBean.ChangeCommandButtonR(1)}"/>
+                            <p:commandButton value="1.5" onclick="{draw(1.5); }"
+                                             action="#{checkBean.ChangeCommandButtonR(1.5)}"/>
+                            <p:commandButton value="2" id="R2" onclick="{draw(2); }"
+                                             action="#{checkBean.ChangeCommandButtonR(2)}"/>
+                            <p:commandButton value="2.5" id="R25" onclick="{draw(2.5); }"
+                                             action="#{checkBean.ChangeCommandButtonR(2.5)}"/>
+                            <p:commandButton value="3" id="R3" onclick="{draw(3); }"
+                                             action="#{checkBean.ChangeCommandButtonR(3)}"/>
 
                         </div>
-                        <h:inputHidden   id="x" value=""  />
-                        <h:inputHidden id="y" value="" />
-                        <h:inputHidden id="r_form" value=""/>
-                        <h:inputHidden id="result" value="#{checkBean.Check(checkBean.x, checkBean.y, checkBean.r )}" />
 
-                        <p:commandButton value="Submit" action="#{checkBean.Check(checkBean.x, checkBean.y, checkBean.r )}" >
-
-                        </p:commandButton>
+                        <p:commandButton value="Submit" ajax="true" update=":dt"
+                                         actionListener="#{checkBean.Submit}"/>
                     </p:panel>
                 </h:form></td>
             </tr>
         </table>
 
 
-<h:link value="F U C K" outcome="login.xhtml"></h:link>
+        <h:link value="index" outcome="login.xhtml"/>
+
+       <h:dataTable  id="dt" value="#{bank.checkBeans}" var="cb">
+           <h:column>
+               <f:facet name="header">X</f:facet>
+               #{cb.x}
+           </h:column>
+           <h:column>
+               <f:facet name="header">Y</f:facet>
+               #{cb.y}
+           </h:column>
+           <h:column>
+               <f:facet name="header">R</f:facet>
+               #{cb.r}
+           </h:column>
+           <h:column>
+               <f:facet name="header">Result</f:facet>
+               #{cb.result}
+           </h:column>
+       </h:dataTable>
+
     </ui:define>
 
 

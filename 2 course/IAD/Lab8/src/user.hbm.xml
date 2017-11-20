@@ -4,16 +4,22 @@
 "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
  
 <hibernate-mapping>
-    <class name="lab8.LoginBean" table="test207606">
+    <class name="lab8.CheckBean" table="test207606">
         <id name="id" type="int" column="ID">
             <generator class="assigned"/>
         </id>
         
-        <property name="login">
-            <column name="LOGIN"/>
+        <property name="x">
+            <column name="X"/>
         </property>
-        <property name="password">
-            <column name="PASSWORD"/>
+        <property name="y">
+            <column name="Y"/>
+        </property>
+        <property name="r">
+            <column name="R"/>
+        </property>
+        <property name="result">
+            <column name="RESULT"/>
         </property>
        
     </class>

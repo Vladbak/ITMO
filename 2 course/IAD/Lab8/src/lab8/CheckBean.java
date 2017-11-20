@@ -1,15 +1,59 @@
 package lab8;
 
-import javax.faces.bean.ManagedBean;
-import javax.faces.context.FacesContext;
+import org.hibernate.annotations.GenericGenerator;
 
+import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.persistence.*;
+import java.sql.SQLException;
+
+
+@Entity
+@Table(name="test207606")
 @ManagedBean
+@SessionScoped
 public class CheckBean {
+    private long id;
     private double x;
     private double y;
     private double r;
     private boolean result;
 
+    public CheckBean(double x, double y, double r, boolean result) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.result = result;
+    }
+
+    public CheckBean() {
+        this.x = 0;
+        this.y = 0;
+        this.r = 0;
+        this.result = false;
+    }
+
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    @Column(name="id")
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    @Column(name="result")
+    public boolean isResult() {
+        return result;
+    }
+
+    public void setResult(boolean result) {
+        this.result = result;
+    }
+    @Column(name="x")
     public double getX() {
         return x;
     }
@@ -17,7 +61,7 @@ public class CheckBean {
     public void setX(double x) {
         this.x = x;
     }
-
+    @Column(name="y")
     public double getY() {
         return y;
     }
@@ -25,7 +69,7 @@ public class CheckBean {
     public void setY(double y) {
         this.y = y;
     }
-
+    @Column(name="r")
     public double getR() {
         return r;
     }
@@ -37,8 +81,7 @@ public class CheckBean {
     public void ChangeCommandButtonR(String value){
         setR(Double.parseDouble(value));
     }
-
-
+    
     private boolean CheckCircle(double x, double y, double r)
     {
         return ((x>0)&&(y>0)&&(x*x+y*y<(r/2)*(r/2)));
@@ -53,9 +96,22 @@ public class CheckBean {
     }
 
 
-    public boolean Check(double x, double y, double r)
+    public void Check()
     {
-        return (CheckCircle(x,y,r) || CheckRect(x,y,r) || CheckTriangle(x,y,r));
+       result =CheckCircle(x,y,r) || CheckRect(x,y,r) || CheckTriangle(x,y,r);
+
+    /*    try {
+            Factory.getInstance().getCheckBeanDAOimpl().addCheck(this);
+        } catch (SQLException s)
+        {
+            System.out.println("fail");
+        }*/
+    }
+
+    public void Submit(){
+        Check();
+        Bank.addNewCheck(
+                new CheckBean(this.x, this.y, this.r, this.result));
     }
 	
 	
