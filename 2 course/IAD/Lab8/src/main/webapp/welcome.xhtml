@@ -25,11 +25,11 @@
                 <td>
                     <div id="div_svg">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg" width="300" height="300"
-                             onclick="drawPoint(evt);">
+                             onclick=";drawPoint(evt);">
                             <polygon
                                     points="150,150 130,150 150,110" fill="blue"/>
                             <path
-                                    d="M 150 150 L 150 130 A 20 20 0 0 1 170 150 L 150 150"
+                                    d="M 150 150 L 150 130 A 40 40 0 0 1 170 150 L 150 150"
                                     fill="blue"/>
                             <rect x="150" y="150" width="20" height="40"
                                   fill="blue"/>
@@ -38,11 +38,8 @@
                             <line x1="150" x2="150" y1="0" y2="300"
                                   stroke="black"/>
 
-
                         </svg>
                     </div>
-
-
                 </td>
                 <td><h:form id="actual_form">
                     <p:panel header="Set point">
@@ -66,8 +63,11 @@
                         </div>
                         <div>
 
-                            <p:outputLabel value="R: "/>
-                            <p:commandButton  value="1" onclick="{draw(1); }"
+                            <p:outputLabel value="R = ">
+
+
+                            </p:outputLabel>
+                            <p:commandButton value="1" onclick="{draw(1); }"
                                              action="#{checkBean.ChangeCommandButtonR(1)}"/>
                             <p:commandButton value="1.5" onclick="{draw(1.5); }"
                                              action="#{checkBean.ChangeCommandButtonR(1.5)}"/>
@@ -79,13 +79,14 @@
                                              action="#{checkBean.ChangeCommandButtonR(3)}"/>
 
                         </div>
-                        <h:inputHidden id="x_hidden"  value="" />
-                        <h:inputHidden id="y_hidden" value="" />
-                        <h:inputHidden id="result_hidden"  />
 
-                        <p:commandButton value="Submit" ajax="true" update=":datatable"
-                                         actionListener="#{checkBean.Submit}" />
+                        <h:inputHidden id="x_hidden" value="7"/>
+                        <h:inputHidden id="y_hidden" value="7"/>
+                        <p:commandButton value="Submit" ajax="true" update=":dt"
+                                         actionListener="#{checkBean.Submit}"/>
 
+                        <p:commandButton id="submit_button_hidden" style="display: none"  ajax="true" update=":dt"
+                                         actionListener="#{checkBean.SubmitFromPicture}"/>
                     </p:panel>
                 </h:form></td>
             </tr>
@@ -94,9 +95,9 @@
 
         <h:link value="index" outcome="login.xhtml"/>
 
-       <h:dataTable  id="datatable" value="#{bank.checkBeans}" var="cb">
+       <h:dataTable  id="dt" value="#{bank.checkBeans}" var="cb">
            <h:column>
-               <f:facet name="header">1</f:facet>
+               <f:facet name="header">X</f:facet>
                #{cb.x}
            </h:column>
            <h:column>

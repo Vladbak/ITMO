@@ -11,8 +11,8 @@ function draw(r) {
 					+ String(150 - r * 40)).style("fill", "blue");
 	d3.select("#svg").append("path").attr(
 			"d",
-			"M 150 150 L 150 " + String(150 - 20 * r) + " A " + String(20 * r)
-					+ " " + String(20 * r) + " 0 0 1 " + String(150 + 20 * r)
+			"M 150 150 L 150 " + String(150 - 20 * r) + " A " + String(40 * r)
+					+ " " + String(40 * r) + " 0 0 1 " + String(150 + 20 * r)
 					+ " 150 L 150 150").style("fill", "blue");
 	d3.select("#svg").append("rect").attr("x", 150).attr("y", 150).attr(
 			"width", String(20 * r)).attr("height", String(40 * r)).style(
@@ -28,19 +28,15 @@ function draw(r) {
 }
 
 function drawPoint(event){
-	var x = event.pageX - $('#svg').offset().left;
-    var y = event.pageY - $('#svg').offset().top;
+    var x_coord = event.pageX - $('#svg').offset().left;
+    var y_coord = event.pageY - $('#svg').offset().top;
 
-    var x_real, y_real;
+	var x = Number((x_coord-150)/40).toPrecision(2);
+	var y = Number((150-y_coord)/40).toPrecision(2);
 
-    x_real=Number((x-150)/40).toPrecision(2);
-    y_real=Number((150-y)/40).toPrecision(2);
-    document.getElementById("actual_form:x_hidden").value= x_real;
-    document.getElementById("actual_form:y_hidden").value= y_real;
-    var ev_click = new Event('click');
-    document.getElementById("actual_form:hidden_submit_button").dispatchEvent(ev_click);
+    document.getElementById("actual_form:x_hidden").value=x;
+    document.getElementById("actual_form:y_hidden").value=y;
+    document.getElementById("actual_form:submit_button_hidden").click();
+    d3.select("#svg").append("circle").attr("cx", String(x_coord)).attr("cy", String(y_coord)).attr("r", "3").style("fill", "red");
 
-   }
-
-
-
+}
