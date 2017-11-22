@@ -32,7 +32,6 @@ public class Bank {
     public Bank(){
         checkBeans = new ArrayList<CheckBean>();
         checkBeans.add(new CheckBean(1,2,3,true));
-        checkBeans.add(new CheckBean(2,4,6,true));
     }
 
     public static void addNewCheck(CheckBean checkBean){

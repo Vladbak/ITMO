@@ -4,12 +4,12 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.persistence.*;
-import java.sql.SQLException;
+
 
 
 @Entity
-@Table(name="test207606")
 @ManagedBean
 @SessionScoped
 public class CheckBean {
@@ -29,14 +29,14 @@ public class CheckBean {
     public CheckBean() {
         this.x = 0;
         this.y = 0;
-        this.r = 0;
+        this.r = 1;
         this.result = false;
     }
 
     @Id
     @GeneratedValue(generator="increment")
     @GenericGenerator(name="increment", strategy = "increment")
-    @Column(name="id")
+
     public long getId() {
         return id;
     }
@@ -45,7 +45,7 @@ public class CheckBean {
         this.id = id;
     }
 
-    @Column(name="result")
+
     public boolean isResult() {
         return result;
     }
@@ -53,7 +53,7 @@ public class CheckBean {
     public void setResult(boolean result) {
         this.result = result;
     }
-    @Column(name="x")
+
     public double getX() {
         return x;
     }
@@ -61,7 +61,7 @@ public class CheckBean {
     public void setX(double x) {
         this.x = x;
     }
-    @Column(name="y")
+
     public double getY() {
         return y;
     }
@@ -69,7 +69,7 @@ public class CheckBean {
     public void setY(double y) {
         this.y = y;
     }
-    @Column(name="r")
+
     public double getR() {
         return r;
     }
@@ -112,6 +112,18 @@ public class CheckBean {
         Check();
         Bank.addNewCheck(
                 new CheckBean(this.x, this.y, this.r, this.result));
+    }
+
+    public void SubmitFromPicture(){
+        try {
+            String x1 = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("x_hidden");
+            String y1 = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("y_hidden");
+            double x2 = Double.parseDouble(x1);
+            double y2 = Double.parseDouble(y1);
+            CheckBean tempCB = new CheckBean(x2, y2, r, false);
+            tempCB.Check();
+            Bank.addNewCheck(tempCB);
+        }catch (Exception e){};
     }
 	
 	
