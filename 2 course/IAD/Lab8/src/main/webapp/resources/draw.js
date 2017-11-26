@@ -11,8 +11,8 @@ function draw(r) {
 					+ String(150 - r * 40)).style("fill", "blue");
 	d3.select("#svg").append("path").attr(
 			"d",
-			"M 150 150 L 150 " + String(150 - 20 * r) + " A " + String(40 * r)
-					+ " " + String(40 * r) + " 0 0 1 " + String(150 + 20 * r)
+			"M 150 150 L 150 " + String(150 - 20 * r) + " A " + String(20 * r)
+					+ " " + String(20 * r) + " 0 0 1 " + String(150 + 20 * r)
 					+ " 150 L 150 150").style("fill", "blue");
 	d3.select("#svg").append("rect").attr("x", 150).attr("y", 150).attr(
 			"width", String(20 * r)).attr("height", String(40 * r)).style(
@@ -27,16 +27,35 @@ function draw(r) {
 
 }
 
-function drawPoint(event){
-    var x_coord = event.pageX - $('#svg').offset().left;
-    var y_coord = event.pageY - $('#svg').offset().top;
+var x_coord, y_coord;
 
-	var x = Number((x_coord-150)/40).toPrecision(2);
-	var y = Number((150-y_coord)/40).toPrecision(2);
+function drawPoint(event) {
+    x_coord = event.pageX - $('#svg').offset().left;
+    y_coord = event.pageY - $('#svg').offset().top;
 
-    document.getElementById("actual_form:x_hidden").value=x;
-    document.getElementById("actual_form:y_hidden").value=y;
+    var x = Number((x_coord - 150) / 40).toPrecision(2);
+    var y = Number((150 - y_coord) / 40).toPrecision(2);
+
+    document.getElementById("actual_form:x_hidden").value = x;
+    document.getElementById("actual_form:y_hidden").value = y;
     document.getElementById("actual_form:submit_button_hidden").click();
-    d3.select("#svg").append("circle").attr("cx", String(x_coord)).attr("cy", String(y_coord)).attr("r", "3").style("fill", "red");
+
 
 }
+
+function q(){
+	var color="grey";
+	if (document.getElementById("actual_form:result_hidden").value == "true")
+		color="green";
+	else
+		color="red";
+    d3.select("#svg").append("circle").attr("cx", String(x_coord))
+        .attr("cy", String(y_coord))
+        .attr("r", "3").attr("fill", color);
+
+}
+
+
+
+
+

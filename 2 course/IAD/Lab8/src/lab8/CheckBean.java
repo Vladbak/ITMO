@@ -119,12 +119,9 @@ public class CheckBean {
       String xString=FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("actual_form:x_hidden");
       String yString=FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("actual_form:y_hidden");
 
-
-      double x = Double.parseDouble(xString);
-      double y = Double.parseDouble(yString);
-      CheckBean temp_cb = new CheckBean(x, y, this.r, false);
-      temp_cb.Check();
-        Bank.addNewCheck(temp_cb);
+       x = Double.parseDouble(xString);
+       y = Double.parseDouble(yString);
+      Submit();
     }
 	
 	

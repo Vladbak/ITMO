@@ -11,3 +11,11 @@ margin: auto !important;
  #dt tr, #dt td, #dt th   {
      border: 1px solid black;
  }
+
+ .green{
+     color: #008000;
+ }
+
+.red{
+    color: #ff0000;
+}

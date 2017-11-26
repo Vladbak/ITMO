@@ -25,11 +25,11 @@
                 <td>
                     <div id="div_svg">
                         <svg xmlns="http://www.w3.org/2000/svg" version="1.1" id="svg" width="300" height="300"
-                             onclick=";drawPoint(evt);">
+                             onclick="drawPoint(evt)">
                             <polygon
                                     points="150,150 130,150 150,110" fill="blue"/>
                             <path
-                                    d="M 150 150 L 150 130 A 40 40 0 0 1 170 150 L 150 150"
+                                    d="M 150 150 L 150 130 A 20 20 0 0 1 170 150 L 150 150"
                                     fill="blue"/>
                             <rect x="150" y="150" width="20" height="40"
                                   fill="blue"/>
@@ -45,7 +45,7 @@
                     <p:panel header="Set point">
                         <div>
                             <h:outputText value="X: "/>
-                            <p:selectOneMenu style="width:125px" value="#{checkBean.x}">
+                            <p:selectOneMenu style="width:125px"  value="#{checkBean.x}">
                                 <f:selectItem itemLabel="-5" itemValue="-5"/>
                                 <f:selectItem itemLabel="-4" itemValue="-4"/>
                                 <f:selectItem itemLabel="-3" itemValue="-3"/>
@@ -63,11 +63,8 @@
                         </div>
                         <div>
 
-                            <p:outputLabel value="R = ">
-
-
-                            </p:outputLabel>
-                            <p:commandButton value="1" onclick="{draw(1); }"
+                            <p:outputLabel value="R = "/>
+                            <p:commandButton value="1" onclick="{draw(1);  }"
                                              action="#{checkBean.ChangeCommandButtonR(1)}"/>
                             <p:commandButton value="1.5" onclick="{draw(1.5); }"
                                              action="#{checkBean.ChangeCommandButtonR(1.5)}"/>
@@ -82,11 +79,16 @@
 
                         <h:inputHidden id="x_hidden" value="7"/>
                         <h:inputHidden id="y_hidden" value="7"/>
+                        <h:inputHidden id="result_hidden" value="#{checkBean.result}"   />
+
+
                         <p:commandButton value="Submit" ajax="true" update=":dt"
                                          actionListener="#{checkBean.Submit}"/>
 
-                        <p:commandButton id="submit_button_hidden" style="display: none"  ajax="true" update=":dt"
-                                         actionListener="#{checkBean.SubmitFromPicture}"/>
+                        <p:commandButton id="submit_button_hidden" style="display: none"  ajax="true" update=":dt, :actual_form:result_hidden"
+                                         actionListener="#{checkBean.SubmitFromPicture}" oncomplete="q();"  >
+
+                        </p:commandButton>
                     </p:panel>
                 </h:form></td>
             </tr>
@@ -95,7 +97,7 @@
 
         <h:link value="index" outcome="login.xhtml"/>
 
-       <h:dataTable  id="dt" value="#{bank.checkBeans}" var="cb">
+       <h:dataTable  id="dt" value="#{bank.checkBeans}" var="cb" >
            <h:column>
                <f:facet name="header">X</f:facet>
                #{cb.x}
