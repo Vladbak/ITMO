@@ -58,8 +58,12 @@
                             </p:selectOneMenu>
                         </div>
                         <div>
+                            <h:panelGroup>
                             <h:outputText value="Y: "/>
-                            <p:inputText value="#{checkBean.y}"/>
+                            <h:inputText validatorMessage="Wrong Y!" id="y"  required="true" value="#{checkBean.y}" >
+                                <f:validateDoubleRange minimum="-5" maximum="5"/>
+                            </h:inputText>
+                            </h:panelGroup>
                         </div>
                         <div>
 
@@ -81,11 +85,10 @@
                         <h:inputHidden id="y_hidden" value="7"/>
                         <h:inputHidden id="result_hidden" value="#{checkBean.result}"   />
 
-
-                        <p:commandButton value="Submit" ajax="true" update=":dt"
+                        <p:commandButton id="main_submit" value="Submit" ajax="true" update=":dt"
                                          actionListener="#{checkBean.Submit}"/>
 
-                        <p:commandButton id="submit_button_hidden" style="display: none"  ajax="true" update=":dt, :actual_form:result_hidden"
+                        <p:commandButton id="submit_button_hidden" style="display: none"  ajax="true" update=":dt :actual_form:result_hidden"
                                          actionListener="#{checkBean.SubmitFromPicture}" oncomplete="q();"  >
 
                         </p:commandButton>

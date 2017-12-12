@@ -1,17 +1,12 @@
 package lab8;
 
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.persistence.*;
-import java.sql.SQLException;
 
 
-@Entity
-@Table(name="test207606")
-@ManagedBean
+@ManagedBean(eager=true)
 @SessionScoped
 public class CheckBean {
     private long id;
@@ -30,14 +25,11 @@ public class CheckBean {
     public CheckBean() {
         this.x = 0;
         this.y = 0;
-        this.r = 0;
+        this.r = 1;
         this.result = false;
     }
 
-    @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    @Column(name="id")
+
     public long getId() {
         return id;
     }
@@ -46,7 +38,7 @@ public class CheckBean {
         this.id = id;
     }
 
-    @Column(name="result")
+
     public boolean isResult() {
         return result;
     }
@@ -54,7 +46,7 @@ public class CheckBean {
     public void setResult(boolean result) {
         this.result = result;
     }
-    @Column(name="x")
+
     public double getX() {
         return x;
     }
@@ -62,7 +54,7 @@ public class CheckBean {
     public void setX(double x) {
         this.x = x;
     }
-    @Column(name="y")
+
     public double getY() {
         return y;
     }
@@ -70,7 +62,7 @@ public class CheckBean {
     public void setY(double y) {
         this.y = y;
     }
-    @Column(name="r")
+
     public double getR() {
         return r;
     }
@@ -100,13 +92,6 @@ public class CheckBean {
     public void Check()
     {
        result =CheckCircle(x,y,r) || CheckRect(x,y,r) || CheckTriangle(x,y,r);
-
-    /*    try {
-            Factory.getInstance().getCheckBeanDAOimpl().addCheck(this);
-        } catch (SQLException s)
-        {
-            System.out.println("fail");
-        }*/
     }
 
     public void Submit(){

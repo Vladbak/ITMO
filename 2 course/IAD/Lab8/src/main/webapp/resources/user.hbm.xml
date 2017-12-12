@@ -5,21 +5,20 @@
  
 <hibernate-mapping>
     <class name="lab8.DBCheckBean" table="test207606">
-        <id name="id" type="int" >
-            <column name="id"  />
-            <generator class="assigned" />
+        <id name="id" type="int" column="ID">
+            <generator class="assigned"/>
         </id>
 
-        <property name="x">
-            <column name="X"/>
+        <property name="x" type="java.lang.Double" >
+            <column name="X" />
         </property>
-        <property name="y">
+        <property name="y" type="java.lang.Double">
             <column name="Y"/>
         </property>
-        <property name="r">
+        <property name="r" type="java.lang.Double">
             <column name="R"/>
         </property>
-        <property name="result">
+        <property name="result" type="java.lang.String">
             <column name="RESULT"/>
         </property>
        

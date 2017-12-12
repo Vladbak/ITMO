@@ -1,4 +1,5 @@
 document.getElementById("svg").addEventListener("click", drawPoint(event));
+document.getElementById("actual_form:y").addEventListener("change", validate);
 
 function draw(r) {
 
@@ -53,6 +54,23 @@ function q(){
         .attr("cy", String(y_coord))
         .attr("r", "3").attr("fill", color);
 
+}
+
+function validate() {
+	var y = document.getElementById("actual_form:y").value;
+	if (!isNaN(y) || !isFinite(y))
+	{	alert("Неверно введен Y");
+		document.getElementById("actual_form:main_submit").isDisabled=true;
+		return;
+	}
+
+	else if(y<-5 || y>5)
+	{       alert("Y не входит в заданный диапазон");
+    document.getElementById("actual_form:main_submit").isDisabled=true;
+    return;
+}
+    document.getElementById("actual_form:main_submit").isDisabled=false;
+	
 }
 
 
