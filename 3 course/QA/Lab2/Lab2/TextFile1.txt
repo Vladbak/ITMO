@@ -1,0 +1,19 @@
+﻿int interpolationSearch(a : int[], key : int)  // a должен быть отсортирован 
+  left = 0  // левая граница поиска (будем считать, что элементы массива нумеруются с нуля) 
+  right = a.length - 1  // правая граница поиска 
+
+  while a[left] < key and key < a[right]
+    mid = left + (key - a[left]) * (right - left) / (a[right] - a[left])  // индекс элемента, с которым будем проводить сравнение 
+    if a[mid] < key
+      left = mid + 1
+    else if a[mid] > key
+      right = mid - 1
+    else
+      return mid
+
+  if a[left] == key
+    return left
+  else if a[right] == key
+    return right
+  else
+    return -1 // если такого элемента в массиве нет 
