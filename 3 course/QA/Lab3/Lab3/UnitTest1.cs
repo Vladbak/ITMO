@@ -14,11 +14,11 @@ namespace Lab3
     public class UnitTest1
     {
         public static readonly String DeviceName = "vbox86p";
-        public static readonly String PackageName = "com.twitter.android";
+        public static readonly String PackageName = "com.perm.kate";
         public static readonly String PlatformName = "Android";
         public static readonly Int32 WaitTimeout = 15000;
         public static readonly String OptionalButton1Id = "android:id/button1";
-        public static readonly String MainActivity = "com.twitter.app.main.MainActivity";
+        public static readonly String MainActivity = "com.perm.kate.MainActivity";
 
         public AndroidDriver<AndroidElement> Init(string Activity)
         {
