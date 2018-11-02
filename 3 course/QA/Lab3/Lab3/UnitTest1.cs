@@ -27,6 +27,8 @@ namespace Lab3
         public static readonly String SendMessageButton = "//*[@resource-id='com.perm.kate:id/btn_new_message']";
         public static readonly String MyDialog = "//android.view.View/android.widget.ListView/android.widget.LinearLayout/android.widget.ImageView[@content-desc='Profile Владимир Бакшенов']/../android.widget.LinearLayout";
 
+        public static readonly String LikeButton= "//android.widget.ListView/android.widget.LinearLayout/android.widget.LinearLayout[2]/android.widget.LinearLayout/android.widget.LinearLayout[4]";
+
         public static readonly String Login= "vladbakshen@mail.ru";
         public static readonly String Password= "1259486370Vk";
 
@@ -63,6 +65,13 @@ namespace Lab3
             Thread.Sleep(2000);
             driver.FindElementByXPath(TextArea).SendKeys(HelloMessage);
             driver.FindElementByXPath(SendMessageButton).Click();
+        }
+
+        [TestMethod]
+        public void LikePost()
+        {
+            Thread.Sleep(2000);
+            driver.FindElementByXPath(LikeButton).Click();
         }
     }
 }
