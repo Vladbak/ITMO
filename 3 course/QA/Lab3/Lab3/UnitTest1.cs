@@ -15,7 +15,6 @@ namespace Lab3
         public static readonly String PlatformName = "Android";
         public static readonly Int32 WaitTimeout = 15000;
 
-        public static readonly String OptionalButton1Id = "android:id/button1";
         public static readonly String MainActivity = "com.perm.kate.MainActivity";
         public static readonly String GotItButton = "//*[@resource-id='com.google.android.gm:id/welcome_tour_got_it]";
         public static readonly String AddNewEmail = "//*[@resource-id='com.google.android.gm:id/setup_addresses_add_another']";
@@ -23,12 +22,9 @@ namespace Lab3
         public static readonly String NewEmailTextArea = "//android.widget.EditText";
         public static readonly String LoginInput = "//*[@resource-id='com.facebook.katana:id/login_username']";
         public static readonly String PasswordInput = "//*[@resource-id='com.facebook.katana:id/login_password']";
-        public static readonly String GotItButton = "//*[@resource-id='com.google.android.gm:id/welcome_tour_got_it']";
-        public static readonly String GotItButton = "//*[@resource-id='com.google.android.gm:id/welcome_tour_got_it']";
-        public static readonly String GotItButton = "//*[@resource-id='com.google.android.gm:id/welcome_tour_got_it']";
-        public static readonly String NoGooglePlayButton = "//android.widget.Button[@resource-id='android:id/button1']";
+        public static readonly String SignInButton = "//*[@resource-id='com.facebook.katana:id/login_password']";
 
-        
+
         public static readonly String Login= "vladbakshen@mail.ru";
         public static readonly String Password= "1259486370Vk";
 
@@ -50,8 +46,8 @@ namespace Lab3
         public void LogIn()
         {
             driver = Init(MainActivity);
-            driver.FindElementByXPath(LoginName).SendKeys(Login);
-            driver.FindElementByXPath(PasswordName).SendKeys(Password);
+            driver.FindElementByXPath(LoginInput).SendKeys(Login);
+            driver.FindElementByXPath(PasswordInput).SendKeys(Password);
             driver.FindElementByXPath(SignInName).Click();
         }
 
