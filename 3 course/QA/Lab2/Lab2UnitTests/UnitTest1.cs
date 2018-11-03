@@ -11,63 +11,84 @@ namespace Lab2UnitTests
         [TestMethod]
         public void FindByteElement()
         {
-            List<byte> list = new List<byte>();
-            for (int i = 0; i < 10000; i++)
+            int size = 500000000;
+            byte[] list = new byte[size];
+            int NumberOfIterations = (int)(size / 255) - 1;
+            for (int i = 0; i < NumberOfIterations; i++)
             {
                 for (byte b = 0; b < 255; b++)
-                    list.Add(b);
+                    list[i * 255 + b] = b;
             }
-            list.Sort();
+            Array.Sort(list);
 
             int actualResult = Program.Select<byte>(list, 0);
 
-            Assert.IsTrue(actualResult >= 0 && actualResult < 10000);
+            Assert.IsTrue(actualResult >= 0 && actualResult < NumberOfIterations);
         }
 
         [TestMethod]
         public void FindShortElement()
         {
-            List<short> list = new List<short>();
-            for (int i = 0; i < 1000; i++)
+            short[] list = new short[500000000];
+            int NumberOfIterations = 15000;
+            for (int i = 0; i < NumberOfIterations; i++)
             {
                 for (short s = 0; s < Int16.MaxValue; s++)
-                    list.Add(s);
+                    list[i * Int16.MaxValue + s] = s;
             }
-            list.Sort();
+            Array.Sort(list);
 
             int actualResult = Program.Select<short>(list, 0);
 
-            Assert.IsTrue(actualResult >= 0 && actualResult < 1000);
+            Assert.IsTrue(actualResult >= 0 && actualResult < NumberOfIterations);
         }
 
         [TestMethod]
         public void FindIntElement()
         {
-            List<int> list = new List<int>();
-            for (int i = 0; i < 10000000; i++)
-            {
-                list.Add(i);
-            }
+            int[] list = CreateIntArray();
 
-            int key = 999;
-            int expectedResult = key;
-            int actualResult = Program.Select<int>(list, key);
+            int expectedResult = 444444444;
+            int actualResult = Program.Select<int>(list, list[expectedResult]);
 
             Assert.AreEqual(expectedResult, actualResult);
+        }
+
+        private int[] CreateIntArray()
+        {
+            int Million = 1000000;
+            int NumberOfMilElements = 500;
+            int NumberToSkip = 40;
+
+            int[] list = new int[NumberOfMilElements * Million];
+            int i = 0, j = 0;
+
+            for (; i < Million * NumberToSkip; i++)
+            {
+                list[j++] = i;
+            }
+            i += Million * NumberToSkip;
+
+            for (; i < Million * (NumberOfMilElements + NumberToSkip); i++)
+            {
+                list[j++] = i;
+            }
+            return list;
         }
 
         [TestMethod]
         public void FindLongElement()
         {
-            List<long> list = new List<long>();
-            for (long l = 0; l < 1000000; l++)
+            int size = 100000000;
+            long[] list = new long[size];
+
+            for (long l = 0; l < size; l++)
             {
-                list.Add(l);
+                list[l] = l;
             }
 
-            int key = 999;
-            int expectedResult = key;
-            int actualResult = Program.Select<long>(list, key);
+            int expectedResult = 999;
+            int actualResult = Program.Select<long>(list, list[expectedResult]);
 
             Assert.AreEqual(expectedResult, actualResult);
         }
@@ -75,17 +96,19 @@ namespace Lab2UnitTests
         [TestMethod]
         public void ElementNotInTheList()
         {
-            List<int> list = new List<int>();
+            int size = 500000000;
+            int[] list = new int[size];
             int i = 0;
+            int j = 0;
             int MissingValue = 500000;
             for (; i < MissingValue; i++)
             {
-                list.Add(i);
+                list[j++] = i;
             };
             i++;
-            for (; i < 1000000; i++)
+            for (; i < size; i++)
             {
-                list.Add(i);
+                list[j++] = i;
             }
 
             int key = MissingValue;
