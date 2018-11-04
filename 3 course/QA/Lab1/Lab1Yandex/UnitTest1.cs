@@ -22,6 +22,8 @@ namespace Lab1Yandex
         string LinkTitle = "Yandex";
         string LinkToImage = "https://avatars.mds.yandex.net/get-bunker/128809/2242b0f7baf7f84a7d0d6cd6020acd311fba9df8/orig";
         string Quote = "To be or not to be";
+        string ColorfulText = "Colorful Text";
+        string FontText = "Custom font text";
 
         [SetUp]
         public void startBrowser()
@@ -51,6 +53,8 @@ namespace Lab1Yandex
             catch (Exception e)
             {
                 driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+                driver.FindElement(By.CssSelector("input[type='password']")).SendKeys(password);
+                driver.FindElement(By.CssSelector("input[type='submit']")).Click();
             }
         }
 
@@ -107,9 +111,22 @@ namespace Lab1Yandex
 
             try
             {
-                TestUndoRedoButtons(RichTextArea, ToolBar);
+                //TestUndoRedoButtons(RichTextArea, ToolBar);
 
-                TestTextStyleButtons(RichTextArea, ToolBarXPath);
+                // TestTextStyleButtons(RichTextArea, ToolBarXPath);
+
+                //TestLinks(RichTextArea, ToolBar);
+
+                //TestImageButton(RichTextArea, ToolBar);
+
+                //TestBlockQuote(RichTextArea, ToolBar);
+
+                //===================эта дичь не работает==============
+                //TestTextColors(RichTextArea, ToolBar);
+
+                //TestFont(RichTextArea, ToolBar);
+                //===================================================
+
 
             }
             catch (Exception e)
@@ -117,6 +134,80 @@ namespace Lab1Yandex
                 Assert.Fail(e.Message);
             }
 
+        }
+
+        private void TestFont(IWebElement RichTextArea, IWebElement ToolBar)
+        {
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__mailfont")).Click();
+            driver.FindElement(By.CssSelector("a[style='font-family:comic sans ms,sans-serif;']")).Click();
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__mailfontsize")).Click();
+            driver.FindElement(By.CssSelector("a[style='font-size:16px;line-height:normal;']")).Click();
+
+            RichTextArea.SendKeys(FontText);
+            Assert.IsTrue(RichTextArea.FindElement(By.CssSelector("span[style='font-family:comic sans ms,sans-serif;'] span[style='font-size:16px;']")).GetAttribute("innerText").Contains(FontText));
+            RichTextArea.SendKeys(Keys.Enter);
+        }
+
+        private void TestTextColors(IWebElement RichTextArea, IWebElement ToolBar)
+        {
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__mailtextcolor")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector("[data-value='00FF00']")).Click();
+            Thread.Sleep(1000);
+
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__mailbgcolor")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector("[data-value='FFFF00']")).Click();
+            Thread.Sleep(1000);
+
+            RichTextArea.Click();
+            RichTextArea.SendKeys(ColorfulText);
+            Assert.IsTrue(RichTextArea.FindElement(By.CssSelector("span[style='color:#00ff00;'] span[style='background-color:#ffff00;']")).GetAttribute("innerText").Contains(ColorfulText));
+            RichTextArea.SendKeys(Keys.Control + "z");
+            RichTextArea.SendKeys(Keys.Control + "z");
+            RichTextArea.SendKeys(Keys.Control + "z");
+        }
+
+        private void TestImageButton(IWebElement RichTextArea, IWebElement ToolBar)
+        {
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__addimage")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".mail-Compose-AddImage-Popup-Wrapper input")).SendKeys(LinkToImage);
+            driver.FindElement(By.CssSelector(".mail-Compose-AddImage-Popup-Wrapper button")).Click();
+            Thread.Sleep(2000);
+            Assert.AreEqual(LinkToImage, RichTextArea.FindElement(By.CssSelector("img")).GetAttribute("src"));
+            RichTextArea.SendKeys(Keys.Enter);
+        }
+
+        private void TestBlockQuote(IWebElement RichTextArea, IWebElement ToolBar)
+        {
+            //blockquote
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__blockquote")).Click();
+            Thread.Sleep(1000);
+            RichTextArea.SendKeys(Quote);
+            Thread.Sleep(1000);
+            Assert.AreEqual(Quote, RichTextArea.FindElement(By.CssSelector("blockquote div")).GetAttribute("innerText"));
+            RichTextArea.SendKeys(Keys.Enter);
+        }
+
+        private void TestLinks(IWebElement RichTextArea, IWebElement ToolBar)
+        {
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__link")).Click();
+            Thread.Sleep(1500);
+            var list = driver.FindElements(By.CssSelector(".mail-Compose-Maillink input"));
+            list[0].SendKeys(Link);
+            list[1].SendKeys(LinkTitle);
+
+            driver.FindElement(By.CssSelector(".mail-Compose-Maillink button")).Click();
+            Thread.Sleep(2000);
+
+            Assert.IsTrue(RichTextArea.FindElement(By.CssSelector("a")).GetAttribute("innerText").Contains(LinkTitle));
+
+            RichTextArea.Click();
+            RichTextArea.SendKeys(Keys.Left);
+            ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__unlink")).Click();
+            RichTextArea.Click();
+            RichTextArea.SendKeys(Keys.Enter);
         }
 
         private void TestUndoRedoButtons(IWebElement RichTextArea, IWebElement ToolBar)
