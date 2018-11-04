@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27703.2018
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab3", "Lab3\Lab3.csproj", "{5FA9F474-5493-49D2-93A7-8C0421FD968D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab3Gmail", "Lab3Gmail\Lab3Gmail.csproj", "{4ED9D0A3-B1AB-4E0A-A09B-FC7B4E5AB713}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lab3Facebook", "Lab3Gmail\Lab3Facebook.csproj", "{4ED9D0A3-B1AB-4E0A-A09B-FC7B4E5AB713}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

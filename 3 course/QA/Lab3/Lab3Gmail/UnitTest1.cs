@@ -5,7 +5,7 @@ using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Remote;
 
 
-namespace Lab3Gmail
+namespace Lab3Facebook
 {
     [TestClass]
     public class UnitTest1
@@ -65,6 +65,13 @@ namespace Lab3Gmail
                 driver.FindElementByXPath(LoginButton).Click();
                 driver.Tap(1, 1050, 1900, 1);
             }
+
+        }
+
+        [TestMethod]
+        public void Idle()
+        {
+
         }
 
         [TestMethod]
