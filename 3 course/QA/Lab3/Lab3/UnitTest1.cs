@@ -5,7 +5,6 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium.Appium.Android;
 using OpenQA.Selenium.Remote;
 
-
 namespace Lab3
 {
     [TestClass]
@@ -108,7 +107,6 @@ namespace Lab3
             }
             Thread.Sleep(1000);
         }
-
 
         [TestMethod]
         public void Repost()
