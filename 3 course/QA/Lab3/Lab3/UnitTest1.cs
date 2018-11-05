@@ -46,7 +46,7 @@ namespace Lab3
         public static readonly String RepostOnMyWallButton= "//*[@resource-id='com.perm.kate:id/select_dialog_listview']/android.widget.TextView[1]";
         public static readonly String ShareButton = "//*[@resource-id='android:id/button1']";
 
-        public static readonly String SearchButton = "//*[@resource-id='com.perm.kate:id/fl_button_search']";
+        public static readonly String SearchButton = "//*[@content-desc='Search']";
         public static readonly String SearchGroupsButton = "//*[@text='Groups']";
         public static readonly String SearchField = "//*[@resource-id='com.perm.kate:id/tb_search']";
         public static readonly String SendSearchRequestButton = "//*[@resource-id='com.perm.kate:id/btn_search']";
@@ -81,6 +81,7 @@ namespace Lab3
         [TestMethod]
         public void JoinOrLeaveGroup()
         {
+            Thread.Sleep(5000);
             driver.FindElementByXPath(SearchButton).Click();
             Thread.Sleep(4000);
             driver.FindElementByXPath(SearchGroupsButton).Click();
