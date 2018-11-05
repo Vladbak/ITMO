@@ -2,9 +2,7 @@
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-using OpenQA.Selenium;
 using OpenQA.Selenium.Appium.Android;
-using OpenQA.Selenium.Appium.MultiTouch;
 using OpenQA.Selenium.Remote;
 
 
@@ -14,8 +12,9 @@ namespace Lab3
     public class UnitTest1
     {
         int sleepTime = 600;
-
-
+        AndroidDriver<AndroidElement> driver;
+        public static readonly String Login = "engine9779@gmail.com";
+        public static readonly String Password = "testpassword";
         public static readonly String HelloMessage = "Hello!";
 
         public static readonly String DeviceName = "vbox86p";
@@ -56,14 +55,6 @@ namespace Lab3
         public static readonly String YesButton = "//*[@resource-id='android:id/button1']";
         public static readonly String GroupMenuButton = "//*[@resource-id='com.perm.kate:id/fl_button_menu']";
         public static readonly String LeaveGroupOption = "//android.widget.ListView/android.widget.LinearLayout[3]";
-
-        //com.perm.kate:id/fl_button_search
-
-        //com.perm.kate:id/select_dialog_listview android:id/button1
-        public static readonly String Login = "engine9779@gmail.com";
-        public static readonly String Password = "testpassword";
-
-        AndroidDriver<AndroidElement> driver;
 
         public AndroidDriver<AndroidElement> Init(string Activity)
         {
@@ -155,41 +146,15 @@ namespace Lab3
             driver.Tap(1, driver.FindElementByXPath("//*[@resource-id='com.android.launcher3:id/widget_preview'][1]"), 3000);
             Thread.Sleep(1500);
             driver.Tap(1, driver.FindElementByXPath("//*[@resource-id='android:id/button1']"), 10);
-
-            // ===============  THIS CODE IS FOR ANDROID 4.1.1 BECAUSE IT HAS DIFFERENT WIDGET UI ===============
-            //driver = Init(MainActivity);
-            //var height = driver.Manage().Window.Size.Height;
-            //var width = driver.Manage().Window.Size.Width;
-            //driver.CloseApp();
-            ////menu
-            //driver.Tap(1, width / 2, (int)(height * 0.9), 1);
-            //Thread.Sleep(500);
-            ////apps
-            //driver.Tap(1, width / 8, (int)(height * 0.05), 1);
-            //Thread.Sleep(500);
-            ////widget
-            //driver.Tap(1, width / 3, (int)(height * 0.05), 1);
-            //Thread.Sleep(500);
-
-            //driver.Swipe(width * 3 / 4, height / 2, width / 10, height / 2, 1000);
-            //Thread.Sleep(500);
-            //driver.Swipe(width * 3 / 4, height / 2, width / 10, height / 2, 1000);
-            //Thread.Sleep(1000);
-            
-            //driver.Tap(1, width * 3 / 4, height / 4, 3000);
         }
 
         [TestMethod]
         public void WriteMessage()
         {
-            
-            //driver = Init(MainActivity);
             Thread.Sleep(2000);
             driver.FindElementByXPath(MessagesTab).Click();
             Thread.Sleep(2000);
-
             SwipeUntilFound(MyDialog);
-            
             Thread.Sleep(2000);
             driver.FindElementByXPath(TextArea).SendKeys(HelloMessage);
             Thread.Sleep(2000);
@@ -199,7 +164,6 @@ namespace Lab3
         [TestMethod]
         public void LikePost()
         {
-            //driver = Init(MainActivity);
             Thread.Sleep(2000);
             SwipeUntilFound(LikeButton);
         }
@@ -220,9 +184,6 @@ namespace Lab3
                 catch (Exception e)
                 {
                     Thread.Sleep(1000);
-
-                    //TouchAction a = (TouchAction)new TouchAction(driver).Press(200, 200).MoveTo(200, 100).Release();
-                    //a.Perform();
                     driver.Swipe(500, 500, 500, 100, 500);
                 }
             }
