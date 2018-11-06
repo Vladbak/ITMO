@@ -345,6 +345,139 @@ namespace Lab1Yandex
         }
 
         [Test]
+        public void MoveMailForward()
+        {
+            string forwardButton = "div.ns-view-toolbar-button-forward";
+            string forwardedMsg = "Forwarded message";
+
+            IWebElement letterCheckBox = driver.FindElement(By.CssSelector("div.ns-view-container-desc.mail-MessagesList.js-messages-list label"));
+
+            letterCheckBox.Click();
+
+            IWebElement button = driver.FindElement(By.CssSelector(forwardButton));
+
+            Assert.IsFalse(button.GetAttribute("class").Contains("is-disabled"));
+            button.Click();
+            Thread.Sleep(500);
+
+            driver.FindElement(By.CssSelector("span[data-name='Себе']")).Click();
+
+            //e-mail text
+            IWebElement text = driver.FindElement(By.CssSelector("div.cke_wysiwyg_div.cke_reset.cke_enable_context_menu.cke_editable.cke_editable_themed.cke_contents_ltr.cke_show_borders"));
+
+            text.SendKeys(forwardedMsg);
+            //sending
+            driver.FindElement(By.CssSelector("div.mail-Compose-Field-Actions_left button")).Click();
+            Thread.Sleep(3000);
+
+            //go to Sended tab
+            driver.FindElement(By.CssSelector("a[href='#sent']")).Click();
+
+            var series = driver.FindElement(By.XPath("//div[@class='mail-Layout-Main js-mail-layout-content']/div[2]/div[5]/div/div/div/div[2]/div/div[1]"));
+            series.Click();
+
+            //click on last email in series
+            series.FindElement(By.XPath("./div/div[2]/div/div[1]")).Click();
+
+            var list = driver.FindElements(By.CssSelector("div.mail-Message-Body-Content div"));
+            var isExpectedMsg = false;
+            foreach(var div in list)
+            {
+                if (div.GetAttribute("innerText").Contains(forwardedMsg))
+                {
+                    isExpectedMsg = true;
+                    break;
+                }
+            }
+
+            Assert.IsTrue(isExpectedMsg);
+        }
+
+        [Test]
+        public void DeleteEmail()
+        {
+            string inbox = "div[class~='ns-view-folders'] a[href='#inbox']";
+            string trash = "div[class~='ns-view-folders'] a[href='#trash']";
+            string deleteButton = "div.ns-view-toolbar-button-delete";
+            string DeletedMsg = "Deleted message";
+
+            //Find button New Mail
+            driver.FindElement(By.CssSelector("div.mail-ComposeButton-Wrap a")).Click();
+
+            //Click to Себе option
+            driver.FindElement(By.CssSelector("span[data-name='Себе']")).Click();
+            //e-mail text
+            IWebElement text = driver.FindElement(By.CssSelector("div.cke_wysiwyg_div.cke_reset.cke_enable_context_menu.cke_editable.cke_editable_themed.cke_contents_ltr.cke_show_borders"));
+
+            text.SendKeys(DeletedMsg);
+            //sending
+            driver.FindElement(By.CssSelector("div.mail-Compose-Field-Actions_left button")).Click();
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.CssSelector(inbox)).Click();
+
+            IWebElement letterCheckBox = driver.FindElement(By.CssSelector("div.ns-view-container-desc.mail-MessagesList.js-messages-list label"));
+
+            letterCheckBox.Click();
+
+            IWebElement button = driver.FindElement(By.CssSelector(deleteButton));
+
+            Assert.IsFalse(button.GetAttribute("class").Contains("is-disabled"));
+            button.Click();
+            Thread.Sleep(500);
+
+            driver.FindElement(By.CssSelector(trash)).Click();
+            Thread.Sleep(500);
+            driver.FindElement(By.XPath("//div[@class='ns-view-container-desc mail-MessagesList js-messages-list']/div[1]")).Click();
+
+            var actualText = driver.FindElement(By.CssSelector("div.mail-Message-Body-Content div")).GetAttribute("innerText");
+
+            Assert.AreEqual(DeletedMsg, actualText);
+        }
+
+        [Test]
+        public void MarkAsSpam()
+        {
+            string inbox = "div[class~='ns-view-folders'] a[href='#inbox']";
+            string spam = "div[class~='ns-view-folders'] a[href='#spam']";
+            string spamButton = "div.ns-view-toolbar-button-spam";
+            string spamMsg = "spam message";
+
+            //Find button New Mail
+            driver.FindElement(By.CssSelector("div.mail-ComposeButton-Wrap a")).Click();
+
+            //Click to Себе option
+            driver.FindElement(By.CssSelector("span[data-name='Себе']")).Click();
+            //e-mail text
+            IWebElement text = driver.FindElement(By.CssSelector("div.cke_wysiwyg_div.cke_reset.cke_enable_context_menu.cke_editable.cke_editable_themed.cke_contents_ltr.cke_show_borders"));
+
+            text.SendKeys(spamMsg);
+            //sending
+            driver.FindElement(By.CssSelector("div.mail-Compose-Field-Actions_left button")).Click();
+            Thread.Sleep(3000);
+
+            driver.FindElement(By.CssSelector(inbox)).Click();
+
+            IWebElement letterCheckBox = driver.FindElement(By.CssSelector("div.ns-view-container-desc.mail-MessagesList.js-messages-list label"));
+
+            letterCheckBox.Click();
+
+            IWebElement button = driver.FindElement(By.CssSelector(spamButton));
+
+            Assert.IsFalse(button.GetAttribute("class").Contains("is-disabled"));
+            button.Click();
+            Thread.Sleep(500);
+
+            driver.FindElement(By.CssSelector(spam)).Click();
+            Thread.Sleep(500);
+            driver.FindElement(By.XPath("//div[@class='ns-view-container-desc mail-MessagesList js-messages-list']/div[1]")).Click();
+
+            var actualText = driver.FindElement(By.CssSelector("div.mail-Message-Body-Content div")).GetAttribute("innerText");
+
+            Assert.AreEqual(spamMsg.ToLower(), actualText.ToLower());
+        }
+
+        [Test]
         public void CheckReadState()
         {
             string markAsRead = "div.ns-view-toolbar-button-mark-as-read";
@@ -399,6 +532,21 @@ namespace Lab1Yandex
                 Assert.IsTrue(MarkAsUnread(markAsUnReadString, letterString));
                 driver.FindElement(By.CssSelector(letterCheckBoxString)).Click();
                 Assert.IsTrue(MarkAsRead(markAsReadString, letterString));
+            }
+        }
+
+        [Test]
+        public void ClickOnTabs()
+        {
+            var list = driver.FindElements(By.CssSelector("[class~='js-invalidate-tab']"));
+
+            for (int i=0; i< list.Count;i++)
+            {
+                list[i].Click();
+                Thread.Sleep(500);
+
+                list = driver.FindElements(By.CssSelector("[class~='js-invalidate-tab']"));
+                Thread.Sleep(500);
             }
         }
 
