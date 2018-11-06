@@ -82,6 +82,10 @@ namespace Lab1
 
             driver.FindElement(By.CssSelector("button.button-area.create_post_button")).Click();
 
+            Thread.Sleep(3000);
+
+            driver.Url = dashboardUrl;
+
             var postList = driver.FindElements(By.CssSelector("li.post_container div.post_body")).ToList();
 
             bool wasPostCreated = false;
@@ -97,22 +101,97 @@ namespace Lab1
         }
 
         [Test]
-        public void GoToInboxAndBack()
+        public void LikePost()
         {
-            Assert.AreEqual(driver.Url, dashboardUrl);
-            driver.FindElement(By.CssSelector("[title='Входящие']")).Click();
-            Thread.Sleep(2000);
-            Assert.AreEqual(driver.Url, inboxUrl);
-            driver.FindElement(By.CssSelector("[title='Лента']")).Click();
-            Thread.Sleep(2000);
-            Assert.AreEqual(driver.Url, dashboardUrl);
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".post_container .like")).Click();
+        }
+
+        [Test]
+        public void Reblog()
+        {
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".post_container a.reblog")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector("button.create_post_button")).Click();
+            driver.Url = dashboardUrl;
+        }
+
+        [Test]
+        public void Reply()
+        {
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".post_container .reply")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".text-input")).SendKeys("Nice!");
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".post-activity-reply button")).Click();
+        }
+
+        [Test]
+        public void SendPost()
+        {
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector(".post_container .share")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.XPath("//a//*[@alt='tumblrbot']/../../..")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector("button[type='submit']")).Click();
+        }
+
+        [Test]
+        public void SubscribeToBlog()
+        {
+            Thread.Sleep(1000);
+            var blogTitle = driver.FindElement(By.CssSelector(".recommended_tumblelogs li a")).GetAttribute("data-peepr").Split('\"')[3];
+
+            driver.FindElement(By.CssSelector(".recommended_tumblelogs li a.follow")).Click();
+            Thread.Sleep(1000);
+            driver.FindElement(By.CssSelector("[title='Учетная запись']")).Click();
+            driver.FindElement(By.CssSelector(".popover_menu_list li a[href='/following']")).Click();
+            //.follower div.info .name a
+            var list = driver.FindElements(By.CssSelector(".follower"));
+            var subscriptionFound = false;
+            string title=string.Empty;
+            foreach (var f in list)
+            {
+                try
+                {
+                    title = f.FindElement(By.CssSelector("div.info .name a")).GetAttribute("innerText");
+                }
+                catch (Exception e) { continue; };
+                if (title.ToLower().Equals(blogTitle.ToLower()))
+                {
+                    subscriptionFound = true;
+                    break;
+                }
+            }
+            Assert.IsTrue(subscriptionFound);
+            //
+
+        }
+
+        [Test]
+        public void ClickOnAllTabs()
+        {
+            var tabsList = driver.FindElements(By.CssSelector(".tab_bar .tab"));
+            for(int i=0; i< tabsList.Count; i++)
+            {
+                tabsList[i].Click();
+                Thread.Sleep(3000);
+                tabsList = driver.FindElements(By.CssSelector(".tab_bar .tab"));
+                Thread.Sleep(1000);
+            }
         }
 
         [Test]
         public void WriteToBot()
         {
             driver.FindElement(By.CssSelector("[title='Сообщения']")).Click();
-            driver.FindElement(By.CssSelector(".inbox-main [href='/conversation/new/tumblrbot']")).Click();
+            driver.FindElement(By.CssSelector(".inbox-compose-toggle")).Click();
+            driver.FindElement(By.CssSelector(".inbox-compose-input input")).SendKeys("tumblrbot");
+            Thread.Sleep(500);
+            driver.FindElement(By.CssSelector("[data-subview='searchResultView'] .inbox-recipient")).Click();
 
             //number of messages before new msg from me
             var numberOfMessages = driver.FindElements(By.CssSelector(".conversation-message")).Count;
@@ -122,7 +201,7 @@ namespace Lab1
             //number after my new msg
             var newNumberOfMessages = driver.FindElements(By.CssSelector(".conversation-message")).Count;
 
-            Assert.AreEqual(newNumberOfMessages - numberOfMessages, 1);
+            Assert.IsTrue(newNumberOfMessages > numberOfMessages);
 
             //waiting for bot response
             Thread.Sleep(5000);
@@ -130,8 +209,7 @@ namespace Lab1
             numberOfMessages = newNumberOfMessages;
             //number after bot responses 
             newNumberOfMessages = driver.FindElements(By.CssSelector(".conversation-message")).Count;
-
-            Assert.AreEqual(newNumberOfMessages - numberOfMessages, 1);
+            Assert.IsTrue(newNumberOfMessages > numberOfMessages);
         }
 
         [TearDown]
