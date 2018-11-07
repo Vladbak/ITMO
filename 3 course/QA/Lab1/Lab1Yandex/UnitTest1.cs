@@ -1,8 +1,10 @@
-﻿using NUnit.Framework;
+﻿using System;
+using System.Threading;
+
+using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using System;
-using System.Threading;
+using OpenQA.Selenium.Interactions;
 
 namespace Lab1Yandex
 {
@@ -98,7 +100,6 @@ namespace Lab1Yandex
         [Test]
         public void TestRichTextbox()
         {
-            //https://avatars.mds.yandex.net/get-bunker/128809/2242b0f7baf7f84a7d0d6cd6020acd311fba9df8/orig
             //Find button New Mail
             driver.FindElement(By.CssSelector("div.mail-ComposeButton-Wrap a")).Click();
 
@@ -122,11 +123,10 @@ namespace Lab1Yandex
                 //TestBlockQuote(RichTextArea, ToolBar);
 
                 //===================эта дичь не работает==============
-                //TestTextColors(RichTextArea, ToolBar);
+                TestTextColors(RichTextArea, ToolBar);
 
                 //TestFont(RichTextArea, ToolBar);
                 //===================================================
-
 
             }
             catch (Exception e)
@@ -152,8 +152,10 @@ namespace Lab1Yandex
         {
             ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__mailtextcolor")).Click();
             Thread.Sleep(1000);
-            driver.FindElement(By.CssSelector("[data-value='00FF00']")).Click();
-            Thread.Sleep(1000);
+            var a = driver.FindElement(By.CssSelector("[data-value='00FF00']"));
+
+            Actions builder = new Actions(driver);
+            builder.MoveToElement(a, 5, 5).Click().Build().Perform();
 
             ToolBar.FindElement(By.CssSelector("a.cke_button.cke_button__mailbgcolor")).Click();
             Thread.Sleep(1000);
